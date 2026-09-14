@@ -1,0 +1,148 @@
+/**
+ * CashDenominationInput - Reusable cash denomination picker with bills and coins
+ * 
+ * Provides an intuitive interface for entering cash amounts using Philippine peso
+ * denominations (bills: 20, 50, 100, 200, 500, 1000; coins: 1, 5, 10, 20).
+ */
+
+import { cn } from '@platform/lib/utils'
+
+interface CashDenominationInputProps {
+  /**
+   * Current amount in cents (e.g., 10000 = ₱100.00)
+   */
+  value: number
+  
+  /**
+   * Callback when amount changes (amount in cents)
+   */
+  onChange: (cents: number) => void
+  
+  /**
+   * Callback when exact amount button is clicked
+   * If provided, shows an "Exact" button
+   */
+  onExact?: () => void
+  
+  /**
+   * Callback when clear button is clicked
+   * If provided, shows a "Clear" button
+   */
+  onClear?: () => void
+  
+  /**
+   * Whether the exact button should appear selected
+   */
+  isExactSelected?: boolean
+  
+  /**
+   * Optional label above the denomination buttons
+   */
+  label?: string
+  
+  /**
+   * Optional className for the container
+   */
+  className?: string
+  
+  /**
+   * Whether to show the action buttons (Exact/Clear)
+   */
+  showActions?: boolean
+}
+
+const BILL_DENOMINATIONS = [20, 50, 100, 200, 500, 1000]
+const COIN_DENOMINATIONS = [1, 5, 10, 20]
+
+export function CashDenominationInput({
+  value,
+  onChange,
+  onExact,
+  onClear,
+  isExactSelected = false,
+  label,
+  className,
+  showActions = true,
+}: CashDenominationInputProps) {
+  const addDenomination = (pesos: number) => {
+    onChange(value + pesos * 100)
+  }
+
+  const handleExact = () => {
+    onExact?.()
+  }
+
+  const handleClear = () => {
+    onChange(0)
+    onClear?.()
+  }
+
+  return (
+    <div className={cn('space-y-4', className)}>
+      {label && <p className='text-sm font-medium text-foreground mb-2'>{label}</p>}
+      
+      {/* Action buttons (Exact/Clear) */}
+      {showActions && (onExact || onClear) && (
+        <div className='flex gap-1.5'>
+          {onExact && (
+            <button
+              type='button'
+              onClick={handleExact}
+              className={cn(
+                'flex-1 h-11 rounded-xl text-sm font-bold border transition-colors',
+                isExactSelected
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-background border-border/60 text-foreground hover:border-primary/50 hover:bg-primary/5',
+              )}
+            >
+              Exact
+            </button>
+          )}
+          {onClear && (
+            <button
+              type='button'
+              onClick={handleClear}
+              className='h-11 px-4 rounded-xl text-sm font-bold border border-border/60 bg-background text-muted-foreground hover:text-destructive hover:border-destructive/40 hover:bg-destructive/5 transition-colors'
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Bills */}
+      <div>
+        <p className='text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5'>Bills</p>
+        <div className='grid grid-cols-3 gap-1.5'>
+          {BILL_DENOMINATIONS.map(bill => (
+            <button
+              key={`bill-${bill}`}
+              type='button'
+              onClick={() => addDenomination(bill)}
+              className='h-11 rounded-xl text-sm font-bold border border-border/60 bg-background text-foreground hover:border-primary/50 hover:bg-primary/5 active:scale-95 transition-all'
+            >
+              ₱{bill}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Coins */}
+      <div>
+        <p className='text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5'>Coins</p>
+        <div className='grid grid-cols-4 gap-1.5'>
+          {COIN_DENOMINATIONS.map(coin => (
+            <button
+              key={`coin-${coin}`}
+              type='button'
+              onClick={() => addDenomination(coin)}
+              className='h-11 rounded-xl text-sm font-bold border border-border/60 bg-muted/40 text-foreground hover:border-primary/50 hover:bg-primary/5 active:scale-95 transition-all'
+            >
+              ₱{coin}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}

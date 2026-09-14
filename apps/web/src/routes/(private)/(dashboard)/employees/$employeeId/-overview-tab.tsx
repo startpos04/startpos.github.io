@@ -20,7 +20,7 @@ interface OverviewTabProps {
 
 export function OverviewTab({ employee, isOnline, handleRevokeSession, handleDisable }: OverviewTabProps) {
   return (
-    <div className='space-y-5'>
+    <div className='space-y-5 px-4'>
       {/* Contact */}
       <div className='space-y-3'>
         <h4 className='text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2'>

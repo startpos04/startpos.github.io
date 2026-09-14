@@ -26,8 +26,8 @@ import { cn } from '@platform/lib/utils'
 import { Link, useLocation } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import {
+  BarChart3,
   BookOpenIcon,
-  BotIcon,
   BuildingIcon,
   ChevronRightIcon,
   ClipboardPenLine,
@@ -35,9 +35,9 @@ import {
   HelpCircleIcon,
   LayoutDashboardIcon,
   LifeBuoyIcon,
+  Package,
   SettingsIcon,
   ShieldIcon,
-  TerminalSquareIcon,
 } from 'lucide-react'
 
 function BrandIcon() {
@@ -51,7 +51,9 @@ function BrandIcon() {
   )
 }
 
-import { BusinessType, Role } from 'prisma/generated/prisma/enums'
+import { branchCollection } from '@platform/db/collections'
+import { useLiveQuery } from '@tanstack/react-db'
+import { BusinessType, type Role } from 'prisma/generated/prisma/enums'
 import * as React from 'react'
 import { authStore, getAuthenticatedUser, useAuthenticatedUser } from '@/lib/better-auth/auth-store'
 
@@ -73,7 +75,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAuthenticatedUser()
   const location = useLocation()
 
-  // Capability checks — drives sidebar item visibility
+  // Query actual branch count from collection
+  const { data: allBranches } = useLiveQuery(q => q.from({ branch: branchCollection }))
+  const activeBranchCount = allBranches?.filter(b => !b.deletedAt).length ?? 1
+
+  // Capability checks
   const caps = useCapabilities([
     Capabilities.CREATE_TASK,
     Capabilities.CREATE_PURCHASE,
@@ -86,18 +92,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     Capabilities.MANAGE_BRANCHES,
   ])
 
-  // Permission checks — replaces role-based checks
+  // Permission checks
   const perms = usePermissions([
-    // Business section permissions
+    // Business
     Permissions.BUSINESS_VIEW_BILLING,
     Permissions.BUSINESS_VIEW_PROFILE,
     Permissions.BUSINESS_VIEW_CAPABILITIES,
     Permissions.BUSINESS_VIEW_BRANCHES,
     Permissions.BUSINESS_VIEW_SUPPLIERS,
     Permissions.BUSINESS_VIEW_CUSTOMERS,
-    // User management permissions
     Permissions.USER_MANAGE_PERMISSIONS,
-    // Branch section permissions
+    // Branch
     Permissions.BRANCH_VIEW_EMPLOYEES,
     Permissions.BRANCH_VIEW_PRODUCTS,
     Permissions.BRANCH_VIEW_PURCHASES,
@@ -111,148 +116,141 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     Permissions.BRANCH_VIEW_BILLING,
   ])
 
-  // Helper to determine if a route is a match or a sub-path of the current location
+  // Helper to determine if a route is active
   const isRouteActive = React.useCallback(
     (itemUrl: string) => {
       if (itemUrl === '#' || !itemUrl) return false
-
       const currentPath = location.pathname
-      // Exact match
       if (currentPath === itemUrl) return true
-
-      // Special case: /business should only match exactly, not /business/subscription etc.
       if (itemUrl === '/business') return false
-
-      // Nested match: check if current path starts with itemUrl
-      // Example: /employees/admin-1 starts with /employees
       return currentPath.startsWith(`${itemUrl}/`)
     },
     [location.pathname],
   )
 
+  // Helper to build menu items
+  const buildMenuItem = React.useCallback(
+    (config: { title: string; url: string; icon: React.ReactNode; condition: boolean; items?: Array<{ title: string; url: string } | null> }) => {
+      if (!config.condition) return null
+      return {
+        title: config.title,
+        url: config.url,
+        icon: config.icon,
+        allowedRoles: [] as Role[],
+        items: config.items?.filter(Boolean) ?? [],
+      }
+    },
+    [],
+  )
+
   const { team, items } = React.useMemo((): { team: { name: string; logo: React.ReactNode; plan: string }; items: Items[] } => {
     if (!user?.business) return { team: { name: APP_NAME, logo: <BrandIcon />, plan: 'Guest' }, items: [] }
 
-    // Check if this is a single-branch business (most important check - comes first!)
-    const isSingleBranch = !caps['MANAGE_BRANCHES'] || user.business?.branches?.length === 1
-
-    // Check if user has any business-level permissions (replaces isAdmin check)
+    const isSingleBranch = !caps['MANAGE_BRANCHES'] || activeBranchCount === 1
     const hasBusinessAccess =
       perms[Permissions.BUSINESS_VIEW_BILLING] || perms[Permissions.BUSINESS_VIEW_PROFILE] || perms[Permissions.BUSINESS_VIEW_CAPABILITIES]
 
-    // Check if user has supervisor-level permissions (view reports, transactions)
-    const hasSupervisorAccess = perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS]
-
-    // PRIORITY 1: Single-branch businesses ALWAYS show unified branch sidebar
-    // This happens regardless of the current route (/business/* or not)
+    // PRIORITY 1: Single-branch - unified sidebar
     if (isSingleBranch) {
-      // Build business menu items (for single-branch sidebar)
       const businessItems = hasBusinessAccess
         ? [
-            perms[Permissions.BUSINESS_VIEW_PROFILE] ? { title: 'Overview', url: '/business', isActive: false } : null,
-            perms[Permissions.BUSINESS_VIEW_PROFILE] ? { title: 'Profile', url: '/business/profile', isActive: false } : null,
-            perms[Permissions.BUSINESS_VIEW_CUSTOMERS] && caps['MANAGE_CUSTOMERS'] ? { title: 'Customers', url: '/business/customers', isActive: false } : null,
-            perms[Permissions.BUSINESS_VIEW_SUPPLIERS] && caps['MANAGE_SUPPLIERS'] ? { title: 'Suppliers', url: '/business/suppliers', isActive: false } : null,
-            perms[Permissions.BUSINESS_VIEW_CAPABILITIES] ? { title: 'Capabilities', url: '/business/capabilities', isActive: false } : null,
-            perms[Permissions.USER_MANAGE_PERMISSIONS] ? { title: 'Permissions', url: '/business/permissions', isActive: false } : null,
-            perms[Permissions.BUSINESS_VIEW_BILLING] ? { title: 'Subscription', url: '/business/subscription', isActive: false } : null,
+            perms[Permissions.BUSINESS_VIEW_PROFILE] ? { title: 'Overview', url: '/business' } : null,
+            perms[Permissions.BUSINESS_VIEW_PROFILE] ? { title: 'Profile', url: '/business/profile' } : null,
+            perms[Permissions.BUSINESS_VIEW_BRANCHES] && caps['MANAGE_BRANCHES'] ? { title: 'Branches', url: '/business/branches' } : null,
+            perms[Permissions.BUSINESS_VIEW_CUSTOMERS] && caps['MANAGE_CUSTOMERS'] ? { title: 'Customers', url: '/business/customers' } : null,
+            perms[Permissions.BUSINESS_VIEW_SUPPLIERS] && caps['MANAGE_SUPPLIERS'] ? { title: 'Suppliers', url: '/business/suppliers' } : null,
+            perms[Permissions.BUSINESS_VIEW_CAPABILITIES] ? { title: 'Capabilities', url: '/business/capabilities' } : null,
+            perms[Permissions.USER_MANAGE_PERMISSIONS] ? { title: 'Permissions', url: '/business/permissions' } : null,
+            perms[Permissions.BUSINESS_VIEW_BILLING] ? { title: 'Subscription', url: '/business/subscription' } : null,
           ].filter(Boolean)
         : []
 
-      const data = {
-        team: {
-          name: APP_NAME,
-          logo: <BrandIcon />,
-          plan: user.role || 'Guest',
-        },
-        items: [
-          // Business section first for single-branch businesses
-          businessItems.length > 0
-            ? {
-                title: 'Business',
-                url: '#',
-                icon: <BuildingIcon />,
-                allowedRoles: [] as Role[],
-                items: businessItems,
-              }
-            : null,
-          perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || hasSupervisorAccess
-            ? {
-                title: 'Dashboard',
-                url: '/dashboard',
-                icon: <LayoutDashboardIcon />,
-                allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-              }
-            : null,
-          perms[Permissions.BRANCH_VIEW_EMPLOYEES] || perms[Permissions.BRANCH_VIEW_PRODUCTS]
-            ? {
-                title: 'Admin',
-                url: '#',
-                icon: <TerminalSquareIcon />,
-                allowedRoles: [Role.ADMIN],
-                items: [
-                  perms[Permissions.BRANCH_VIEW_EMPLOYEES] ? { title: 'Employees', url: '/employees' } : null,
-                  perms[Permissions.BRANCH_VIEW_PRODUCTS] ? { title: 'Products', url: '/products' } : null,
-                  caps['BATCH_PREPARATION'] && perms[Permissions.BRANCH_VIEW_PRODUCTION] ? { title: 'Preparation', url: '/preparation' } : null,
-                  caps['CREATE_PURCHASE'] && perms[Permissions.BRANCH_VIEW_PURCHASES] ? { title: 'Purchases', url: '/purchases' } : null,
-                  user.business?.businessType === BusinessType.RESTAURANT && perms[Permissions.BRANCH_VIEW_PRODUCTS]
-                    ? { title: 'Ingredients', url: '/ingredients' }
-                    : null,
-                ].filter(Boolean),
-              }
-            : null,
-          perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS]
-            ? {
-                title: 'Supervisor',
-                url: '#',
-                icon: <BotIcon />,
-                allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-                items: [
-                  caps['VIEW_SALES_REPORTS'] && perms[Permissions.BRANCH_VIEW_SALES_REPORTS] ? { title: 'Sales Report', url: '/sales-reports' } : null,
-                  caps['MANAGE_INVENTORY'] && perms[Permissions.BRANCH_VIEW_INVENTORY_REPORTS]
-                    ? { title: 'Inventory Reports', url: '/inventory-reports' }
-                    : null,
-                  perms[Permissions.BRANCH_VIEW_TRANSACTIONS] ? { title: 'Transactions', url: '/transactions' } : null,
-                  caps['VIEW_ORDER_HISTORY'] && perms[Permissions.BRANCH_VIEW_ORDERS] ? { title: 'Order History', url: '/order-history' } : null,
-                ].filter(Boolean),
-              }
-            : null,
-          caps['CREATE_TASK']
-            ? {
-                title: 'Tasks',
-                url: '/tasks',
-                icon: <ClipboardPenLine />,
-                allowedRoles: [Role.ADMIN, Role.SUPERVISOR, Role.CASHIER],
-              }
-            : null,
-          perms[Permissions.BRANCH_CREATE_ORDER] || perms[Permissions.BRANCH_VIEW_ORDERS]
-            ? {
-                title: 'POS',
-                url: '/pos',
-                icon: <BookOpenIcon />,
-                allowedRoles: [Role.ADMIN, Role.SUPERVISOR, Role.CASHIER],
-              }
-            : null,
-          perms[Permissions.BRANCH_VIEW_BILLING]
-            ? {
-                title: 'Billing',
-                url: '/billing',
-                icon: <CreditCardIcon />,
-                allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-              }
-            : null,
-          perms[Permissions.BRANCH_VIEW_SETTINGS]
-            ? {
-                title: 'Settings',
-                url: '/settings',
-                icon: <SettingsIcon />,
-                allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-              }
-            : null,
-        ].filter(Boolean) as Items[],
-      }
+      const rawItems = [
+        // Business section
+        businessItems.length > 0
+          ? buildMenuItem({
+              title: 'Business',
+              url: '#',
+              icon: <BuildingIcon />,
+              condition: true,
+              items: businessItems,
+            })
+          : null,
 
-      // Support items (Contact Us, FAQ) for single-branch - added separately at the bottom
+        // Dashboard
+        buildMenuItem({
+          title: 'Dashboard',
+          url: '/dashboard',
+          icon: <LayoutDashboardIcon />,
+          condition: !!(perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS]),
+        }),
+
+        // POS
+        buildMenuItem({
+          title: 'POS',
+          url: '/pos',
+          icon: <BookOpenIcon />,
+          condition: !!(perms[Permissions.BRANCH_CREATE_ORDER] || perms[Permissions.BRANCH_VIEW_ORDERS]),
+        }),
+
+        // Products group
+        buildMenuItem({
+          title: 'Products',
+          url: '#',
+          icon: <Package />,
+          condition: !!(perms[Permissions.BRANCH_VIEW_PRODUCTS] || perms[Permissions.BRANCH_VIEW_EMPLOYEES]),
+          items: [
+            perms[Permissions.BRANCH_VIEW_PRODUCTS] ? { title: 'Products', url: '/products' } : null,
+            user.business?.businessType === BusinessType.RESTAURANT && perms[Permissions.BRANCH_VIEW_PRODUCTS]
+              ? { title: 'Ingredients', url: '/ingredients' }
+              : null,
+            caps['BATCH_PREPARATION'] && perms[Permissions.BRANCH_VIEW_PRODUCTION] ? { title: 'Preparation', url: '/preparation' } : null,
+            caps['BATCH_PREPARATION'] && perms[Permissions.BRANCH_VIEW_PRODUCTION] ? { title: 'Waste History', url: '/preparation/waste-history' } : null,
+            caps['CREATE_PURCHASE'] && perms[Permissions.BRANCH_VIEW_PURCHASES] ? { title: 'Purchases', url: '/purchases' } : null,
+            perms[Permissions.BRANCH_VIEW_EMPLOYEES] ? { title: 'Employees', url: '/employees' } : null,
+          ],
+        }),
+
+        // Reports group
+        buildMenuItem({
+          title: 'Reports',
+          url: '#',
+          icon: <BarChart3 />,
+          condition: !!(perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS] || perms[Permissions.BRANCH_VIEW_ORDERS]),
+          items: [
+            caps['VIEW_SALES_REPORTS'] && perms[Permissions.BRANCH_VIEW_SALES_REPORTS] ? { title: 'Sales Report', url: '/sales-reports' } : null,
+            caps['MANAGE_INVENTORY'] && perms[Permissions.BRANCH_VIEW_INVENTORY_REPORTS] ? { title: 'Inventory Reports', url: '/inventory-reports' } : null,
+            perms[Permissions.BRANCH_VIEW_TRANSACTIONS] ? { title: 'Transactions', url: '/transactions' } : null,
+            caps['VIEW_ORDER_HISTORY'] && perms[Permissions.BRANCH_VIEW_ORDERS] ? { title: 'Order History', url: '/order-history' } : null,
+          ],
+        }),
+
+        // Tasks
+        buildMenuItem({
+          title: 'Tasks',
+          url: '/tasks',
+          icon: <ClipboardPenLine />,
+          condition: !!caps['CREATE_TASK'],
+        }),
+
+        // Billing
+        buildMenuItem({
+          title: 'Billing',
+          url: '/billing',
+          icon: <CreditCardIcon />,
+          condition: !!perms[Permissions.BRANCH_VIEW_BILLING],
+        }),
+
+        // Settings
+        buildMenuItem({
+          title: 'Settings',
+          url: '/settings',
+          icon: <SettingsIcon />,
+          condition: !!perms[Permissions.BRANCH_VIEW_SETTINGS],
+        }),
+      ].filter(Boolean) as Items[]
+
+      // Support links
       const supportLinks: Items[] = [
         {
           title: 'Contact Us',
@@ -273,8 +271,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
       ]
 
-      data.items = data.items.map((item): Items => {
-        // Map sub-items and check if any are active
+      // Map items to add isActive states
+      const mappedItems = rawItems.map((item): Items => {
         const subItems = item.items?.map(subItem => ({
           ...subItem,
           isActive: isRouteActive(subItem.url),
@@ -290,14 +288,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         }
       })
 
-      // Add support links at the end
-      data.items = [...data.items, ...supportLinks]
-
-      return data
+      return {
+        team: {
+          name: APP_NAME,
+          logo: <BrandIcon />,
+          plan: user.role || 'Guest',
+        },
+        items: [...mappedItems, ...supportLinks],
+      }
     }
 
-    // PRIORITY 2: Multi-branch business in business context
-    // Show dedicated business sidebar when navigating /business/* routes
+    // PRIORITY 2: Multi-branch in business context
     const isBusinessContext = location.pathname.startsWith('/business')
     if (isBusinessContext && hasBusinessAccess) {
       return {
@@ -307,70 +308,54 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           plan: 'Business Admin',
         },
         items: [
-          perms[Permissions.BUSINESS_VIEW_PROFILE]
-            ? {
-                title: 'Overview',
-                url: '/business',
-                icon: <LayoutDashboardIcon />,
-                allowedRoles: [] as Role[], // Not used anymore, kept for type compatibility
-              }
-            : null,
-          perms[Permissions.BUSINESS_VIEW_PROFILE]
-            ? {
-                title: 'Profile',
-                url: '/business/profile',
-                icon: <SettingsIcon />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
-          perms[Permissions.BUSINESS_VIEW_BRANCHES] && caps['MANAGE_BRANCHES']
-            ? {
-                title: 'Branches',
-                url: '/business/branches',
-                icon: <BotIcon />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
-          perms[Permissions.BUSINESS_VIEW_CUSTOMERS] && caps['MANAGE_CUSTOMERS']
-            ? {
-                title: 'Customers',
-                url: '/business/customers',
-                icon: <BookOpenIcon />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
-          perms[Permissions.BUSINESS_VIEW_SUPPLIERS] && caps['MANAGE_SUPPLIERS']
-            ? {
-                title: 'Suppliers',
-                url: '/business/suppliers',
-                icon: <ClipboardPenLine />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
-          perms[Permissions.BUSINESS_VIEW_CAPABILITIES]
-            ? {
-                title: 'Capabilities',
-                url: '/business/capabilities',
-                icon: <TerminalSquareIcon />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
-          perms[Permissions.USER_MANAGE_PERMISSIONS]
-            ? {
-                title: 'Permissions',
-                url: '/business/permissions',
-                icon: <ShieldIcon />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
-          perms[Permissions.BUSINESS_VIEW_BILLING]
-            ? {
-                title: 'Subscription',
-                url: '/business/subscription',
-                icon: <CreditCardIcon />,
-                allowedRoles: [] as Role[],
-              }
-            : null,
+          buildMenuItem({
+            title: 'Overview',
+            url: '/business',
+            icon: <LayoutDashboardIcon />,
+            condition: !!perms[Permissions.BUSINESS_VIEW_PROFILE],
+          }),
+          buildMenuItem({
+            title: 'Profile',
+            url: '/business/profile',
+            icon: <SettingsIcon />,
+            condition: !!perms[Permissions.BUSINESS_VIEW_PROFILE],
+          }),
+          buildMenuItem({
+            title: 'Branches',
+            url: '/business/branches',
+            icon: <BuildingIcon />,
+            condition: !!(perms[Permissions.BUSINESS_VIEW_BRANCHES] && caps['MANAGE_BRANCHES']),
+          }),
+          buildMenuItem({
+            title: 'Customers',
+            url: '/business/customers',
+            icon: <BookOpenIcon />,
+            condition: !!(perms[Permissions.BUSINESS_VIEW_CUSTOMERS] && caps['MANAGE_CUSTOMERS']),
+          }),
+          buildMenuItem({
+            title: 'Suppliers',
+            url: '/business/suppliers',
+            icon: <ClipboardPenLine />,
+            condition: !!(perms[Permissions.BUSINESS_VIEW_SUPPLIERS] && caps['MANAGE_SUPPLIERS']),
+          }),
+          buildMenuItem({
+            title: 'Capabilities',
+            url: '/business/capabilities',
+            icon: <Package />,
+            condition: !!perms[Permissions.BUSINESS_VIEW_CAPABILITIES],
+          }),
+          buildMenuItem({
+            title: 'Permissions',
+            url: '/business/permissions',
+            icon: <ShieldIcon />,
+            condition: !!perms[Permissions.USER_MANAGE_PERMISSIONS],
+          }),
+          buildMenuItem({
+            title: 'Subscription',
+            url: '/business/subscription',
+            icon: <CreditCardIcon />,
+            condition: !!perms[Permissions.BUSINESS_VIEW_BILLING],
+          }),
         ]
           .filter(isNotNullish)
           .map(item => ({
@@ -381,92 +366,70 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       }
     }
 
-    // PRIORITY 3: Multi-branch business in branch context (default)
-    // Show standard branch sidebar without business section
-    const data = {
-      team: {
-        name: APP_NAME,
-        logo: <BrandIcon />,
-        plan: user.role || 'Guest',
-      },
-      items: [
-        perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || hasSupervisorAccess
-          ? {
-              title: 'Dashboard',
-              url: '/dashboard',
-              icon: <LayoutDashboardIcon />,
-              allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-            }
-          : null,
-        perms[Permissions.BRANCH_VIEW_EMPLOYEES] || perms[Permissions.BRANCH_VIEW_PRODUCTS]
-          ? {
-              title: 'Admin',
-              url: '#',
-              icon: <TerminalSquareIcon />,
-              allowedRoles: [Role.ADMIN],
-              items: [
-                perms[Permissions.BRANCH_VIEW_EMPLOYEES] ? { title: 'Employees', url: '/employees' } : null,
-                perms[Permissions.BRANCH_VIEW_PRODUCTS] ? { title: 'Products', url: '/products' } : null,
-                caps['BATCH_PREPARATION'] && perms[Permissions.BRANCH_VIEW_PRODUCTION] ? { title: 'Preparation', url: '/preparation' } : null,
-                caps['CREATE_PURCHASE'] && perms[Permissions.BRANCH_VIEW_PURCHASES] ? { title: 'Purchases', url: '/purchases' } : null,
-                user.business?.businessType === BusinessType.RESTAURANT && perms[Permissions.BRANCH_VIEW_PRODUCTS]
-                  ? { title: 'Ingredients', url: '/ingredients' }
-                  : null,
-              ].filter(Boolean),
-            }
-          : null,
-        perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS]
-          ? {
-              title: 'Supervisor',
-              url: '#',
-              icon: <BotIcon />,
-              allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-              items: [
-                caps['VIEW_SALES_REPORTS'] && perms[Permissions.BRANCH_VIEW_SALES_REPORTS] ? { title: 'Sales Report', url: '/sales-reports' } : null,
-                caps['MANAGE_INVENTORY'] && perms[Permissions.BRANCH_VIEW_INVENTORY_REPORTS] ? { title: 'Inventory Reports', url: '/inventory-reports' } : null,
-                perms[Permissions.BRANCH_VIEW_TRANSACTIONS] ? { title: 'Transactions', url: '/transactions' } : null,
-                caps['VIEW_ORDER_HISTORY'] && perms[Permissions.BRANCH_VIEW_ORDERS] ? { title: 'Order History', url: '/order-history' } : null,
-              ].filter(Boolean),
-            }
-          : null,
-        caps['CREATE_TASK']
-          ? {
-              title: 'Tasks',
-              url: '/tasks',
-              icon: <ClipboardPenLine />,
-              allowedRoles: [Role.ADMIN, Role.SUPERVISOR, Role.CASHIER],
-            }
-          : null,
-        perms[Permissions.BRANCH_CREATE_ORDER] || perms[Permissions.BRANCH_VIEW_ORDERS]
-          ? {
-              title: 'POS',
-              url: '/pos',
-              icon: <BookOpenIcon />,
-              allowedRoles: [Role.ADMIN, Role.SUPERVISOR, Role.CASHIER],
-            }
-          : null,
-        perms[Permissions.BRANCH_VIEW_BILLING]
-          ? {
-              title: 'Billing',
-              url: '/billing',
-              icon: <CreditCardIcon />,
-              allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-            }
-          : null,
-        perms[Permissions.BRANCH_VIEW_SETTINGS]
-          ? {
-              title: 'Settings',
-              url: '/settings',
-              icon: <SettingsIcon />,
-              allowedRoles: [Role.ADMIN, Role.SUPERVISOR],
-            }
-          : null,
-      ].filter(Boolean) as Items[],
-    }
+    // PRIORITY 3: Multi-branch in branch context
+    const rawItems = [
+      buildMenuItem({
+        title: 'Dashboard',
+        url: '/dashboard',
+        icon: <LayoutDashboardIcon />,
+        condition: !!(perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS]),
+      }),
+      buildMenuItem({
+        title: 'POS',
+        url: '/pos',
+        icon: <BookOpenIcon />,
+        condition: !!(perms[Permissions.BRANCH_CREATE_ORDER] || perms[Permissions.BRANCH_VIEW_ORDERS]),
+      }),
+      buildMenuItem({
+        title: 'Products',
+        url: '#',
+        icon: <Package />,
+        condition: !!(perms[Permissions.BRANCH_VIEW_PRODUCTS] || perms[Permissions.BRANCH_VIEW_EMPLOYEES]),
+        items: [
+          perms[Permissions.BRANCH_VIEW_PRODUCTS] ? { title: 'Products', url: '/products' } : null,
+          user.business?.businessType === BusinessType.RESTAURANT && perms[Permissions.BRANCH_VIEW_PRODUCTS]
+            ? { title: 'Ingredients', url: '/ingredients' }
+            : null,
+          caps['BATCH_PREPARATION'] && perms[Permissions.BRANCH_VIEW_PRODUCTION] ? { title: 'Preparation', url: '/preparation' } : null,
+          caps['BATCH_PREPARATION'] && perms[Permissions.BRANCH_VIEW_PRODUCTION] ? { title: 'Waste History', url: '/preparation/waste-history' } : null,
+          caps['CREATE_PURCHASE'] && perms[Permissions.BRANCH_VIEW_PURCHASES] ? { title: 'Purchases', url: '/purchases' } : null,
+          perms[Permissions.BRANCH_VIEW_EMPLOYEES] ? { title: 'Employees', url: '/employees' } : null,
+        ],
+      }),
+      buildMenuItem({
+        title: 'Reports',
+        url: '#',
+        icon: <BarChart3 />,
+        condition: !!(perms[Permissions.BRANCH_VIEW_SALES_REPORTS] || perms[Permissions.BRANCH_VIEW_TRANSACTIONS] || perms[Permissions.BRANCH_VIEW_ORDERS]),
+        items: [
+          caps['VIEW_SALES_REPORTS'] && perms[Permissions.BRANCH_VIEW_SALES_REPORTS] ? { title: 'Sales Report', url: '/sales-reports' } : null,
+          caps['MANAGE_INVENTORY'] && perms[Permissions.BRANCH_VIEW_INVENTORY_REPORTS] ? { title: 'Inventory Reports', url: '/inventory-reports' } : null,
+          perms[Permissions.BRANCH_VIEW_TRANSACTIONS] ? { title: 'Transactions', url: '/transactions' } : null,
+          caps['VIEW_ORDER_HISTORY'] && perms[Permissions.BRANCH_VIEW_ORDERS] ? { title: 'Order History', url: '/order-history' } : null,
+        ],
+      }),
+      buildMenuItem({
+        title: 'Tasks',
+        url: '/tasks',
+        icon: <ClipboardPenLine />,
+        condition: !!caps['CREATE_TASK'],
+      }),
+      buildMenuItem({
+        title: 'Billing',
+        url: '/billing',
+        icon: <CreditCardIcon />,
+        condition: !!perms[Permissions.BRANCH_VIEW_BILLING],
+      }),
+      buildMenuItem({
+        title: 'Settings',
+        url: '/settings',
+        icon: <SettingsIcon />,
+        condition: !!perms[Permissions.BRANCH_VIEW_SETTINGS],
+      }),
+    ].filter(Boolean) as Items[]
 
-    // Map all items to add isActive states
-    data.items = data.items.map(item => {
-      // Map sub-items and check if any are active
+    // Map items to add isActive states
+    const mappedItems = rawItems.map(item => {
       const subItems = item.items?.map(subItem => ({
         ...subItem,
         isActive: isRouteActive(subItem.url),
@@ -482,8 +445,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       }
     })
 
-    return data
-  }, [isRouteActive, user, caps, perms, location.pathname])
+    return {
+      team: {
+        name: APP_NAME,
+        logo: <BrandIcon />,
+        plan: user.role || 'Guest',
+      },
+      items: mappedItems,
+    }
+  }, [isRouteActive, user, caps, perms, location.pathname, activeBranchCount, buildMenuItem])
 
   return (
     <Sidebar collapsible='icon' {...props}>
@@ -552,17 +522,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   )
 }
 
-// ---------------------------------------------------------------------------
-// SubscriptionStatusFooter
-// Shows a compact subscription status badge at the bottom of the sidebar.
-// Only visible for users with billing view permission.
-// Shows an upgrade CTA when in TRIAL (warning window) or blocked states.
-// ---------------------------------------------------------------------------
+// Subscription status footer
 function SubscriptionStatusFooter() {
   const user = getAuthenticatedUser()
   const authorization = useStore(authStore, state => state.authorization)
 
-  // Check if user has permission to view billing (replaces role check)
   const canViewBilling = authorization?.permissions.includes(Permissions.BUSINESS_VIEW_BILLING) ?? false
   if (!canViewBilling) return null
 

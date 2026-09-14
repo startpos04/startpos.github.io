@@ -27,7 +27,7 @@ import { HARDWARE_CONFIG_KEYS, HARDWARE_CONFIG_META } from './fetch-hardware-cap
 
 const CAPABILITY_CONFIG_KEYS: Partial<Record<string, ConfigurationKey[]>> = {
   MANAGE_INVENTORY: ['LOW_STOCK_THRESHOLD', 'BUFFER_RATE', 'AUTO_APPROVE_LOW_STOCK_REFILL'],
-  VIEW_TRANSACTION_HISTORY: ['REFUND_WINDOW_HOURS', 'REFUND_REQUIRES_SUPERVISOR'],
+  ISSUE_REFUND: ['REFUND_WINDOW_HOURS', 'REFUND_REQUIRES_SUPERVISOR'],
 } satisfies Partial<Record<string, ConfigurationKey[]>>
 
 // ---------------------------------------------------------------------------

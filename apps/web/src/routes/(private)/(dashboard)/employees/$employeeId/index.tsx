@@ -238,9 +238,10 @@ function RouteComponent({ employeeId: propId, onClose }: RouteComponentProps) {
       </div>
 
       {/* Scrollable content */}
-      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
+      <div className='flex-1 overflow-y-auto space-y-4'>
         <Tab
           defaultValue='Overview'
+          tabClass='px-4'
           tabs={[
             {
               label: 'Overview',

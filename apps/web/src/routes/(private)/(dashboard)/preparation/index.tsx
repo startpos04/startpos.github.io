@@ -7,7 +7,7 @@ import MountManager from '@platform/lib/mount-manager'
 import { cn } from '@platform/lib/utils'
 import { useLiveQuery } from '@tanstack/react-db'
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { AlertTriangle, Clock, Lock, Package, ShoppingCart, TrendingUp } from 'lucide-react'
+import { AlertTriangle, Clock, Lock, Package, ShoppingCart, Trash2, TrendingUp } from 'lucide-react'
 import numeral from 'numeral'
 import { useMemo } from 'react'
 import { getAuthenticatedUser, useAuthenticatedUser } from '@/lib/better-auth/auth-store'
@@ -125,14 +125,7 @@ function RouteComponent() {
     const summary = productSummaries.find(p => p.variantId === variantId)
     if (!summary) return
 
-    showPreparationSidebar(
-      <RecordWasteSidebar
-        variantId={variantId}
-        productName={`${summary.productName} - ${summary.variantName}`}
-        availableQuantity={summary.remaining}
-        unit={summary.unit}
-      />,
-    )
+    showPreparationSidebar(<RecordWasteSidebar variantId={variantId} productName={`${summary.productName} - ${summary.variantName}`} />)
   }
 
   if (!hasBatchPreparation) {
@@ -212,6 +205,10 @@ function RouteComponent() {
             <div className='flex gap-2 shrink-0'>
               <Button variant='outline' onClick={() => navigate({ to: '/preparation/history' })}>
                 View History
+              </Button>
+              <Button variant='outline' onClick={() => navigate({ to: '/preparation/waste-history' })}>
+                <Trash2 className='w-4 h-4 mr-1' />
+                Waste Log
               </Button>
               <Button onClick={handlePrepare} className='gap-2'>
                 <Package className='w-4 h-4' />

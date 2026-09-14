@@ -11,6 +11,7 @@ import {
   userCollection,
 } from '@platform/db/collections'
 import dayjs from '@platform/lib/dayjs'
+import MountManager from '@platform/lib/mount-manager'
 import { downloadCsv } from '@platform/lib/utils/download-csv'
 import { and, eq, gte, lte, not, toArray, useLiveQuery } from '@tanstack/react-db'
 import { createFileRoute, redirect, useNavigate, useSearch } from '@tanstack/react-router'
@@ -18,10 +19,12 @@ import { Download, PackageCheck } from 'lucide-react'
 import { downloadInventoryCsv } from '@/lib/server-fn/download-inventory'
 import { ActiveBatches } from './-components/active-batches'
 import { InventoryHealth } from './-components/inventory-health'
+import { INVENTORY_REPORTS_ASIDE_ID } from './-components/inventory-reports-sidebar'
 import { LowStockAlert } from './-components/low-stock-alert'
 import { RecentStockMovements } from './-components/recent-stock-movements'
 import { StockLevels } from './-components/stock-levels'
 import { TotalStockValue } from './-components/total-stock-value'
+import { WasteAnalytics } from './-components/waste-analytics'
 import { WasteRate } from './-components/waste-rate'
 
 export const fetchInventoryReports = (from?: string | Date, to?: string | Date) => {
@@ -99,6 +102,7 @@ export type FetchInventoryReportsReturn = ReturnType<typeof fetchInventoryReport
 export type InventoryData = NonNullable<FetchInventoryReportsReturn['data']>
 
 import { Capabilities } from '@platform/lib/entitlement/capability-keys'
+import { getAuthenticatedUser } from '@/lib/better-auth/auth-store'
 
 export const Route = createFileRoute('/(private)/(dashboard)/inventory-reports/')({
   beforeLoad: () => {
@@ -192,8 +196,13 @@ function RouteComponent() {
             <RecentStockMovements inventoryData={inventoryData} />
             <InventoryHealth inventoryData={inventoryData} />
           </div>
+
+          {/* WASTE ANALYTICS */}
+          <WasteAnalytics from={from} to={to} />
         </div>
       </ScrollArea>
+
+      <MountManager id={INVENTORY_REPORTS_ASIDE_ID} />
     </div>
   )
 }

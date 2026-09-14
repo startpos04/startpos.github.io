@@ -14,7 +14,7 @@ import MountManager from '@platform/lib/mount-manager'
 import { cn } from '@platform/lib/utils'
 import { createFileRoute, redirect, useSearch } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
-import { AlertCircle, Coffee, Database, Info, Layers, Sparkles, Trash2 } from 'lucide-react'
+import { AlertCircle, Coffee, Info, Layers, Sparkles, Trash2 } from 'lucide-react'
 import numeral from 'numeral'
 import { ResourceType } from 'prisma/generated/prisma/enums'
 import { useCallback, useMemo, useState } from 'react'
@@ -120,11 +120,6 @@ function RouteComponent() {
     })
   }
 
-  const handleRestock = useCallback((product: posProduct) => {
-    const primaryVariant = product.variants?.[0]
-    if (!primaryVariant) return
-  }, [])
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: add explanation
   const columns = useMemo(
     () =>
@@ -168,17 +163,6 @@ function RouteComponent() {
             tableCols.action(h, {
               cell: ({ row }) => (
                 <div className='flex justify-end gap-1'>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='rounded-full hover:bg-primary/10 hover:text-primary'
-                    onClick={e => {
-                      e.stopPropagation()
-                      handleRestock(row.original)
-                    }}
-                  >
-                    <Database />
-                  </Button>
                   <Button
                     variant='ghost'
                     size='icon'

@@ -10,7 +10,7 @@ import { Badge } from '@platform/components/ui/badge'
 import { Button } from '@platform/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@platform/components/ui/tooltip'
 import { cn } from '@platform/lib/utils'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle2, ChevronDown, ChevronUp, ExternalLink, Info, Pause, Play, RefreshCw, TrendingUp, X } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -18,6 +18,7 @@ import { refreshAuthUser } from '@/lib/better-auth/auth-store'
 import { getCapabilityBenefits, getCapabilityFeaturesUrl, getCapabilitySteps } from '@/lib/capabilities/capability-guide'
 import { acceptCapability, dismissCapability, enableCapability, pauseCapability, restoreCapability } from '@/lib/server-fn/capability-actions'
 import type { CapabilityStateRow } from '@/lib/server-fn/fetch-capability-states'
+import { fetchCapabilityStates } from '@/lib/server-fn/fetch-capability-states'
 import { closeBusinessCapabilitySidebar } from './business-capability-sidebar'
 
 interface BusinessCapabilityDetailsSidebarProps {
@@ -25,9 +26,19 @@ interface BusinessCapabilityDetailsSidebarProps {
   onClose?: () => void
 }
 
-export function BusinessCapabilityDetailsSidebar({ capability, onClose }: BusinessCapabilityDetailsSidebarProps) {
+export function BusinessCapabilityDetailsSidebar({ capability: initialCapability, onClose }: BusinessCapabilityDetailsSidebarProps) {
   const queryClient = useQueryClient()
   const handleClose = onClose ?? closeBusinessCapabilitySidebar
+
+  // Subscribe to the live query so the sidebar reflects state changes made by
+  // Enable / Pause / Restore / Dismiss without needing to be re-mounted.
+  const { data: capabilities } = useQuery({
+    queryKey: ['capability-states'],
+    queryFn: () => fetchCapabilityStates(),
+    // Reuse whatever is already in the cache — don't trigger a redundant fetch
+    staleTime: Number.POSITIVE_INFINITY,
+  })
+  const capability = capabilities?.find(c => c.capabilityId === initialCapability.capabilityId) ?? initialCapability
   const [loading, setLoading] = useState(false)
   const [showWhy, setShowWhy] = useState(false)
 

@@ -16,10 +16,9 @@ import { PriceEngine } from '@/lib/conversion/price-engine'
 import { fetchPosProducts, type posProduct } from '@/lib/queries/fetch-pos-products'
 import { closeProductSidebar, showProductSidebar } from '../-components/product-sidebar'
 import { EditProductSidebar } from './-edit-product'
-import { RecipeTab } from './-recipe-tab'
+import { RecordWasteSidebar } from './-record-waste'
 import { RestockProductSidebar } from './-restock-product'
-import { StockTab } from './-stock-tab'
-import { VariantsTab } from './-variants-tab'
+import { VariantDetailBlock, VariantsTab } from './-variants-tab'
 
 interface ProductDetailsSidebarProps extends MountProps {
   productId: string
@@ -74,8 +73,22 @@ function RouteComponent({ productId: propId, onClose }: RouteComponentProps) {
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
   const primaryVariant = product.variants.find(v => v.attributeType === VariantAttributeType.UNSPECIFIED) || product.variants[0]
+  const isSingleVariant = product.variants.length === 1
 
-  // Restock an ingredient variant (from the recipe tab)
+  // Open restock sidebar for a direct variant (no-recipe products)
+  const handleRestockVariant = (variant: posProduct['variants'][number]) => {
+    showProductSidebar(
+      <RestockProductSidebar
+        open
+        onClose={handleClose}
+        product={product}
+        variant={variant}
+        onBack={() => showProductSidebar(<ProductDetailsSidebar open productId={productId} onClose={handleClose} />)}
+      />,
+    )
+  }
+
+  // Open restock sidebar for an ingredient variant (recipe products)
   const handleRestockIngredient = (ingredientVariant: posProduct['variants'][number]) => {
     showProductSidebar(
       <RestockProductSidebar
@@ -83,6 +96,20 @@ function RouteComponent({ productId: propId, onClose }: RouteComponentProps) {
         onClose={handleClose}
         product={product}
         variant={ingredientVariant}
+        onBack={() => showProductSidebar(<ProductDetailsSidebar open productId={productId} onClose={handleClose} />)}
+      />,
+    )
+  }
+
+  // Open waste sidebar for a variant batch
+  const handleRecordWaste = (variant: posProduct['variants'][number], inventoryId: string) => {
+    showProductSidebar(
+      <RecordWasteSidebar
+        open
+        onClose={handleClose}
+        product={product}
+        variant={variant}
+        defaultInventoryId={inventoryId || undefined}
         onBack={() => showProductSidebar(<ProductDetailsSidebar open productId={productId} onClose={handleClose} />)}
       />,
     )
@@ -176,72 +203,96 @@ function RouteComponent({ productId: propId, onClose }: RouteComponentProps) {
           <X className='size-4' />
         </Button>
       </div>
-
-      {/* Compact info row — price, cost & sales, no card clutter */}
-      <div className='flex items-center gap-4 px-4 py-2.5 border-b bg-muted/20 shrink-0'>
-        <div>
-          <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Price</p>
-          <p className='text-sm font-black font-mono'>{minPrice === maxPrice ? PriceEngine.format(minPrice) : `${PriceEngine.format(minPrice)}+`}</p>
-        </div>
-        <div className='w-px h-6 bg-border' />
-        <div>
-          <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Cost</p>
-          <p className='text-sm font-black font-mono text-muted-foreground'>{PriceEngine.format(primaryVariant?.costPrice || 0)}</p>
-        </div>
-        {hasInventory && (
-          <>
-            <div className='w-px h-6 bg-border' />
-            <div>
-              <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Stock</p>
-              <p className='text-sm font-black'>{totalStock}</p>
-            </div>
-          </>
-        )}
-        <div className='w-px h-6 bg-border' />
-        <div>
-          <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Sales</p>
-          <p className='text-sm font-black'>{totalSales} units</p>
-        </div>
-        {hasBatchPreparation && primaryVariant?.isBatchPrepared && (
-          <>
-            <div className='w-px h-6 bg-border' />
-            <div>
-              <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Production</p>
-              <div className='flex gap-1 items-center'>
-                <p className='text-xs font-bold text-purple-600'>Batch Prep</p>
-                {primaryVariant.productionUsesRecipe && (
-                  <Badge variant='outline' className='text-[9px] py-0 h-3.5'>
-                    Recipe
-                  </Badge>
-                )}
+      {/* Compact info row — only shown for single-variant products.
+          Multi-variant products show per-variant stats inside each tab. */}
+      {isSingleVariant && (
+        <div className='flex items-center gap-4 px-4 py-2.5 border-b bg-muted/20 shrink-0'>
+          <div>
+            <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Price</p>
+            <p className='text-sm font-black font-mono'>{minPrice === maxPrice ? PriceEngine.format(minPrice) : `${PriceEngine.format(minPrice)}+`}</p>
+          </div>
+          <div className='w-px h-6 bg-border' />
+          <div>
+            <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Cost</p>
+            <p className='text-sm font-black font-mono text-muted-foreground'>{PriceEngine.format(primaryVariant?.costPrice || 0)}</p>
+          </div>
+          {hasInventory && (
+            <>
+              <div className='w-px h-6 bg-border' />
+              <div>
+                <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Stock</p>
+                <p className='text-sm font-black'>{totalStock}</p>
               </div>
-            </div>
-            {primaryVariant.shelfLifeHours && (
-              <>
-                <div className='w-px h-6 bg-border' />
-                <div>
-                  <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Shelf Life</p>
-                  <p className='text-xs font-bold'>{primaryVariant.shelfLifeHours}h</p>
+            </>
+          )}
+          <div className='w-px h-6 bg-border' />
+          <div>
+            <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Sales</p>
+            <p className='text-sm font-black'>{totalSales} units</p>
+          </div>
+          {hasBatchPreparation && primaryVariant?.isBatchPrepared && (
+            <>
+              <div className='w-px h-6 bg-border' />
+              <div>
+                <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Production</p>
+                <div className='flex gap-1 items-center'>
+                  <p className='text-xs font-bold text-purple-600'>Batch Prep</p>
+                  {primaryVariant.productionUsesRecipe && (
+                    <Badge variant='outline' className='text-[9px] py-0 h-3.5'>
+                      Recipe
+                    </Badge>
+                  )}
                 </div>
-              </>
-            )}
-          </>
+              </div>
+              {primaryVariant.shelfLifeHours && (
+                <>
+                  <div className='w-px h-6 bg-border' />
+                  <div>
+                    <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Shelf Life</p>
+                    <p className='text-xs font-bold'>{primaryVariant.shelfLifeHours}h</p>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
+      {/* Scrollable content */}
+      <div className='flex-1 overflow-y-auto space-y-4'>
+        {isSingleVariant ? (
+          // Single variant — no tabs, render inline, stat row suppressed (header band covers it)
+          <VariantDetailBlock
+            variant={product.variants[0]}
+            product={product}
+            hasInventory={hasInventory}
+            hideStatRow
+            salesCount={(orderItemCounts ?? []).find(r => r.variantId === product.variants[0].id)?.count ?? 0}
+            onRestockVariant={hasInventory ? handleRestockVariant : undefined}
+            onRestockIngredient={hasInventory ? handleRestockIngredient : undefined}
+            onRecordWaste={hasInventory ? handleRecordWaste : undefined}
+          />
+        ) : (
+          // Multi-variant — one tab per variant, defaultValue anchored to first variant label
+          <Tab
+            key={productId}
+            defaultValue={product.variants[0]?.name || 'Variant 1'}
+            tabClass='px-4'
+            tabs={product.variants.map((v: any, i: number) => ({
+              label: v.name || `Variant ${i + 1}`,
+              Component: VariantsTab,
+              variant: v,
+              product,
+              hasInventory,
+              salesCount: (orderItemCounts ?? []).find(r => r.variantId === v.id)?.count ?? 0,
+              onRestockVariant: hasInventory ? handleRestockVariant : undefined,
+              onRestockIngredient: hasInventory ? handleRestockIngredient : undefined,
+              onRecordWaste: hasInventory ? handleRecordWaste : undefined,
+            }))}
+          />
         )}
       </div>
 
-      {/* Scrollable content */}
-      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
-        <Tab
-          defaultValue='Variants'
-          tabs={[
-            { label: 'Variants', Component: VariantsTab, product },
-            ...(hasInventory ? [{ label: 'Stock', Component: StockTab, product }] : []),
-            ...(hasInventory ? [{ label: 'Recipe', Component: RecipeTab, product, onRestockIngredient: handleRestockIngredient }] : []),
-          ]}
-        />
-      </div>
-
-      {/* Sticky footer — edit only */}
+      {/* Sticky footer — Edit Product */}
       <div className='p-4 border-t shrink-0'>
         <Button variant='outline' className='w-full h-9 gap-2 rounded-xl' onClick={handleEdit}>
           <Edit className='size-3.5' /> Edit Product

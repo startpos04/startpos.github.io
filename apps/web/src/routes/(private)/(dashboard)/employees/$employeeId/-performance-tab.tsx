@@ -17,7 +17,7 @@ interface PerformanceTabProps {
 
 export function PerformanceTab({ employee, totalRevenue, targetReached }: PerformanceTabProps) {
   return (
-    <div className='space-y-5'>
+    <div className='space-y-5 px-4'>
       {/* Revenue */}
       <div className='space-y-3'>
         <h4 className='text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2'>

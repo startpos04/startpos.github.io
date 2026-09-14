@@ -33,6 +33,19 @@ export { TC_INV_003 } from './tests/inventory/TC-INV-003'
 export { TC_INV_004 } from './tests/inventory/TC-INV-004'
 export { TC_INV_005 } from './tests/inventory/TC-INV-005'
 export { TC_INV_006 } from './tests/inventory/TC-INV-006'
+// Inventory — Waste Management
+export { TC_INV_007 } from './tests/inventory/TC-INV-007'
+export { TC_INV_008 } from './tests/inventory/TC-INV-008'
+export { TC_INV_009 } from './tests/inventory/TC-INV-009'
+export { TC_INV_010 } from './tests/inventory/TC-INV-010'
+export { TC_INV_011 } from './tests/inventory/TC-INV-011'
+export { TC_INV_012 } from './tests/inventory/TC-INV-012'
+export { TC_INV_013 } from './tests/inventory/TC-INV-013'
+export { TC_INV_014 } from './tests/inventory/TC-INV-014'
+export { TC_INV_015 } from './tests/inventory/TC-INV-015'
+export { TC_INV_016 } from './tests/inventory/TC-INV-016'
+export { TC_INV_017 } from './tests/inventory/TC-INV-017'
+export { TC_INV_018 } from './tests/inventory/TC-INV-018'
 
 // Offline
 export { TC_OFFLINE_001 } from './tests/offline/TC-OFFLINE-001'
@@ -100,6 +113,18 @@ import { TC_INV_003 } from './tests/inventory/TC-INV-003'
 import { TC_INV_004 } from './tests/inventory/TC-INV-004'
 import { TC_INV_005 } from './tests/inventory/TC-INV-005'
 import { TC_INV_006 } from './tests/inventory/TC-INV-006'
+import { TC_INV_007 } from './tests/inventory/TC-INV-007'
+import { TC_INV_008 } from './tests/inventory/TC-INV-008'
+import { TC_INV_009 } from './tests/inventory/TC-INV-009'
+import { TC_INV_010 } from './tests/inventory/TC-INV-010'
+import { TC_INV_011 } from './tests/inventory/TC-INV-011'
+import { TC_INV_012 } from './tests/inventory/TC-INV-012'
+import { TC_INV_013 } from './tests/inventory/TC-INV-013'
+import { TC_INV_014 } from './tests/inventory/TC-INV-014'
+import { TC_INV_015 } from './tests/inventory/TC-INV-015'
+import { TC_INV_016 } from './tests/inventory/TC-INV-016'
+import { TC_INV_017 } from './tests/inventory/TC-INV-017'
+import { TC_INV_018 } from './tests/inventory/TC-INV-018'
 
 import { TC_OFFLINE_001 } from './tests/offline/TC-OFFLINE-001'
 import { TC_OFFLINE_002 } from './tests/offline/TC-OFFLINE-002'
@@ -180,6 +205,21 @@ export const ALL_TEST_CASES: QaTestCase[] = [
   TC_INV_004,
   TC_INV_005, // void purchase order
   TC_INV_006, // partial GRN (receive less than ordered)
+  // Inventory — waste management (Journey A: finished goods)
+  TC_INV_007, // single batch full write-off via batch picker
+  TC_INV_008, // partial quantity write-off
+  TC_INV_009, // expired batch pre-selected, reason auto-set
+  TC_INV_010, // multi-batch waste in one submission
+  // Inventory — waste management (Journey B2: raw materials, no task)
+  TC_INV_011, // direct stock write-off from Inventory Reports
+  TC_INV_012, // expired raw material batch pre-selected
+  TC_INV_013, // cashier blocked from write-off
+  // Inventory — waste reporting & validation
+  TC_INV_014, // waste history page data accuracy
+  TC_INV_015, // waste analytics by reason and by product
+  TC_INV_016, // waste movements in audit trail, per-batch
+  TC_INV_017, // zero-quantity batch disabled in picker
+  TC_INV_018, // over-quantity validation blocks submit
 
   // Billing — credits and subscription limits
   TC_BILL_001,

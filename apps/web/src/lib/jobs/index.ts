@@ -37,6 +37,12 @@
  *     Purpose: send provider-agnostic renewal reminders at configurable intervals
  *     Dependencies: PaymentProviderRegistry for provider-specific guidance
  *
+ *   bos-usage-aggregate          → src/lib/jobs/bos-usage-aggregate.ts
+ *     Trigger: daily cron
+ *     Purpose: aggregate per-business usage counts (wasteRecordCount, supplierCount, etc.)
+ *              into BusinessUsageSummary.additionalMetrics so the CharacteristicsEngine
+ *              (recalculation-job.ts) has fresh signal data for observation rules
+ *
  * Usage (server-side entry point, e.g. a cron endpoint):
  *   import { rootPrisma } from '@platform/lib/prisma-client'
  *   import { runSubscriptionLifecycleJob } from '@/lib/jobs/subscription-lifecycle'

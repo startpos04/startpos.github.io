@@ -1,3 +1,4 @@
+import { CashDenominationInput } from '@platform/components/custom/form/cash-denomination-input'
 import { MoneyInput } from '@platform/components/custom/form/money-input'
 import { SelectInput } from '@platform/components/custom/form/select-input'
 import { TextInput } from '@platform/components/custom/form/text-input'
@@ -64,9 +65,6 @@ interface PaymentDialogProps {
    */
   canPrintReceipt?: boolean
 }
-
-const BILL_DENOMINATIONS = [20, 50, 100, 200, 500, 1000]
-const COIN_DENOMINATIONS = [1, 5, 10, 20]
 
 const PAYMENT_METHOD_OPTIONS = [
   { value: 'cash', label: '💵 Cash' },
@@ -399,7 +397,7 @@ export function PaymentDialog({ open, onClose, total, onConfirm, cashDrawerRequi
               )}
             </form.Field>
 
-            {/* Exact + Clear — Subscribe so they react to payment changes */}
+            {/* Exact + Clear + Denominations */}
             <form.Subscribe selector={s => ({ payments: s.values.payments, scPwdDiscount: s.values.scPwdDiscount })}>
               {({ payments, scPwdDiscount }) => {
                 const effectiveTotal = Math.max(total - (scPwdDiscount ?? 0), 0)
@@ -408,64 +406,21 @@ export function PaymentDialog({ open, onClose, total, onConfirm, cashDrawerRequi
                 const isExactSelected = payments[clampedActiveIndex]?.tendered === exactNeeded
 
                 return (
-                  <div className='flex gap-1.5'>
-                    <button
-                      type='button'
-                      onClick={() => setExact(effectiveTotal)}
-                      className={cn(
-                        'flex-1 h-11 rounded-xl text-sm font-bold border transition-colors',
-                        isExactSelected
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-background border-border/60 text-foreground hover:border-primary/50 hover:bg-primary/5',
-                      )}
-                    >
-                      Exact
-                    </button>
-                    <button
-                      type='button'
-                      onClick={clearActive}
-                      className='h-11 px-4 rounded-xl text-sm font-bold border border-border/60 bg-background text-muted-foreground hover:text-destructive hover:border-destructive/40 hover:bg-destructive/5 transition-colors'
-                    >
-                      Clear
-                    </button>
-                  </div>
+                  <CashDenominationInput
+                    value={payments[clampedActiveIndex]?.tendered ?? 0}
+                    onChange={cents => {
+                      const updated = paymentsState.map((p, i) => (i === clampedActiveIndex ? { ...p, tendered: cents } : p))
+                      form.setFieldValue('payments', updated)
+                      form.validate('change')
+                    }}
+                    onExact={() => setExact(effectiveTotal)}
+                    onClear={clearActive}
+                    isExactSelected={isExactSelected}
+                    showActions={true}
+                  />
                 )
               }}
             </form.Subscribe>
-
-            {/* Bills */}
-            <div>
-              <p className='text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5'>Bills</p>
-              <div className='grid grid-cols-3 gap-1.5'>
-                {BILL_DENOMINATIONS.map(bill => (
-                  <button
-                    key={`bill-${bill}`}
-                    type='button'
-                    onClick={() => addToActive(bill * 100)}
-                    className='h-11 rounded-xl text-sm font-bold border border-border/60 bg-background text-foreground hover:border-primary/50 hover:bg-primary/5 active:scale-95 transition-all'
-                  >
-                    ₱{bill}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Coins */}
-            <div>
-              <p className='text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5'>Coins</p>
-              <div className='grid grid-cols-4 gap-1.5'>
-                {COIN_DENOMINATIONS.map(coin => (
-                  <button
-                    key={`coin-${coin}`}
-                    type='button'
-                    onClick={() => addToActive(coin * 100)}
-                    className='h-11 rounded-xl text-sm font-bold border border-border/60 bg-muted/40 text-foreground hover:border-primary/50 hover:bg-primary/5 active:scale-95 transition-all'
-                  >
-                    ₱{coin}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 

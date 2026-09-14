@@ -1,20 +1,28 @@
 /**
  * waste-engine.ts
  *
- * Engine for tracking explicit waste of finished goods. Waste is NEVER automatic -
- * it must be explicitly recorded by the user through the UI.
+ * Engine for recording explicit waste of inventory batches.
+ * Waste is NEVER automatic — it must be explicitly recorded by the user
+ * through the UI after physically inspecting the stock.
  *
  * Architecture:
  *   - All methods are synchronous (called inside dbTransaction)
- *   - Creates WASTE movements for audit trail
- *   - Uses FIFO for selecting batches to waste (oldest first)
- *   - Tracks waste reasons for analytics
+ *   - Creates one WASTE movement per batch touched
+ *   - Batch selection is ALWAYS explicit — the caller provides exactly which
+ *     batches to waste and how much from each. No FIFO, no auto-selection.
+ *   - Expiry dates on Inventory rows are informational; they drive UI highlights
+ *     but never trigger automatic waste.
  *
- * Reference: production-module-spec.md Phase 2.3
+ * Design rationale:
+ *   Waste is a physical inspection activity. A person walks to the shelf, sees
+ *   which specific batches are spoiled/expired/damaged, and records exactly those.
+ *   Allocating waste across batches algorithmically (FIFO) produces incorrect
+ *   records — the wrong batch would appear in the audit trail. The user must
+ *   select the batch(es) they physically inspected.
  */
 
 import type { inventoryCollection as InventoryCollectionType, inventoryMovementCollection as MovementCollectionType } from '@platform/db/collections'
-import { InventoryType, MovementType } from 'prisma/generated/prisma/enums'
+import { MovementType } from 'prisma/generated/prisma/enums'
 import { getInventoryMode, InventoryPolicy } from '@/lib/inventory'
 
 // ---------------------------------------------------------------------------
@@ -28,16 +36,39 @@ interface TenantContext {
 }
 
 // ---------------------------------------------------------------------------
-// Record Waste params
+// Batch selection — one entry per physical batch the user selected
+// ---------------------------------------------------------------------------
+
+/**
+ * A single batch the user selected for waste recording.
+ *
+ * quantity  — how much to waste from this batch (≤ batch.quantity in strict mode)
+ * inventoryId — the Inventory row id for this batch
+ */
+export interface WasteBatchSelection {
+  inventoryId: string
+  quantity: number
+}
+
+// ---------------------------------------------------------------------------
+// RecordWaste params — new batch-explicit model
 // ---------------------------------------------------------------------------
 
 export interface RecordWasteParams {
+  /** The variant these batches belong to (used for movement record). */
   variantId: string
-  quantity: number
+  /** Unit to stamp on each movement record. */
   unitId: string
+  /** Reason for waste — applies to all batches in this submission. */
   reason: string
+  /** Optional notes — applies to all batches in this submission. */
   notes?: string
-  inventoryIds?: string[] // Specific batches to waste (optional, defaults to FIFO)
+  /**
+   * Explicit batch selections from the user.
+   * Each entry = one batch the user physically inspected and chose to write off.
+   * The engine creates one WASTE movement per entry.
+   */
+  batches: WasteBatchSelection[]
   ctx: TenantContext
 }
 
@@ -77,104 +108,82 @@ export interface DateRange {
 
 export const WasteEngine = {
   /**
-   * Record waste for finished goods.
+   * Record waste for explicitly selected inventory batches.
    *
-   * IMPORTANT: This is ONLY called when user explicitly records waste through UI.
-   * There is NO automatic waste at end of day or when shelf life expires.
+   * IMPORTANT: This is ONLY called when the user explicitly records waste
+   * through the UI after physically inspecting the stock. There is NO
+   * automatic waste — not at end of day, not when expiry dates pass.
    *
-   * Uses FIFO to select oldest batches first (unless specific inventoryIds provided).
-   * Creates WASTE movements for audit trail.
-   * Reduces inventory quantity.
+   * Each batch in params.batches is processed independently:
+   *   1. Look up the batch in inventoryCollection
+   *   2. Validate quantity against batch.quantity (mode-aware)
+   *   3. Decrement inventory
+   *   4. Insert a WASTE movement for the audit trail
+   *
+   * @throws Error if any batch is not found, or if validation fails in strict mode.
    */
   recordWaste(
     params: RecordWasteParams,
     inventoryCollection: typeof InventoryCollectionType,
     movementCollection: typeof MovementCollectionType,
   ): { success: true; wastedBatches: Array<{ inventoryId: string; quantity: number; cost: number }> } {
-    const { variantId, quantity, unitId, reason, notes, inventoryIds, ctx } = params
+    const { variantId, unitId, reason, notes, batches, ctx } = params
 
-    if (quantity <= 0) {
-      throw new Error('Waste quantity must be greater than 0')
+    if (batches.length === 0) {
+      throw new Error('No batches selected for waste recording')
     }
 
+    const totalRequested = batches.reduce((sum, b) => sum + b.quantity, 0)
+    if (totalRequested <= 0) {
+      throw new Error('Total waste quantity must be greater than 0')
+    }
+
+    const inventoryMode = getInventoryMode(ctx.businessId)
     const now = new Date()
+    const reasonText = notes ? `${reason} - ${notes}` : reason
     const wastedBatches: Array<{ inventoryId: string; quantity: number; cost: number }> = []
 
-    // Get finished goods batches
-    let batches = [...inventoryCollection.values()].filter(
-      i => i.variantId === variantId && i.branchId === ctx.branchId && i.inventoryType === InventoryType.FINISHED_GOOD && i.quantity > 0,
-    )
+    for (const selection of batches) {
+      if (selection.quantity <= 0) continue // skip zero-qty rows the user left blank
 
-    // If specific inventory IDs provided, filter to those
-    if (inventoryIds && inventoryIds.length > 0) {
-      batches = batches.filter(b => inventoryIds.includes(b.id))
-    }
-
-    // Sort by FIFO (oldest producedAt first)
-    batches.sort((a, b) => {
-      const aTime = (a.producedAt || a.createdAt).getTime()
-      const bTime = (b.producedAt || b.createdAt).getTime()
-      return aTime - bTime
-    })
-
-    // Check total available
-    const totalAvailable = batches.reduce((sum, b) => sum + b.quantity, 0)
-
-    // Get inventory mode for validation
-    const inventoryMode = getInventoryMode(ctx.businessId)
-
-    // INVENTORY MODE VALIDATION: Check if waste disposal is allowed based on mode
-    // - strict mode: cannot dispose more than exists (standard validation)
-    // - relaxed mode: can dispose even if negative (for reconciliation scenarios)
-    // - none mode: skip validation (no inventory tracking)
-    //
-    // Note: Waste validation is special. In relaxed mode, you might have:
-    // - Recorded inventory: -5 units (sold 5 without preparing)
-    // - Physical count: 0 units
-    // - Waste recording: Dispose 5 units to reconcile back to -10
-    //
-    // This is different from InventoryPolicy.validateWasteDisposal() which
-    // doesn't allow disposing more than exists. For production waste, we
-    // use validateDeduction() which respects relaxed mode.
-    if (inventoryMode !== 'none') {
-      try {
-        InventoryPolicy.validateDeduction(variantId, totalAvailable, quantity, inventoryMode)
-      } catch (_error) {
-        // Validation failed (strict mode with insufficient stock)
-        throw new Error(`Insufficient finished goods to waste. Available: ${totalAvailable}, Requested: ${quantity}`)
+      const batch = inventoryCollection.get(selection.inventoryId)
+      if (!batch) {
+        throw new Error(`Inventory batch ${selection.inventoryId} not found`)
       }
-    }
 
-    // Consume from oldest batches first (FIFO)
-    let remaining = quantity
-    for (const batch of batches) {
-      if (remaining <= 0) break
+      // Validate per-batch quantity
+      if (inventoryMode !== 'none') {
+        InventoryPolicy.validateWasteDisposal({
+          mode: inventoryMode,
+          variantId,
+          requested: selection.quantity,
+          available: batch.quantity,
+          batchId: batch.id,
+        })
+      }
 
-      const toWaste = Math.min(batch.quantity, remaining)
-      const cost = Math.round((batch.costPrice || 0) * toWaste)
+      const cost = Math.round((batch.costPrice || 0) * selection.quantity)
 
-      // Update inventory
+      // Decrement inventory
       inventoryCollection.update(batch.id, draft => {
-        draft.quantity -= toWaste
+        draft.quantity -= selection.quantity
         draft.updatedAt = now
       })
 
-      // Create WASTE movement
-      const reasonText = notes ? `${reason} - ${notes}` : reason
-
+      // One WASTE movement per batch — preserves the full audit trail
       movementCollection.insert({
         id: crypto.randomUUID(),
         variantId,
         inventoryId: batch.id,
         transactionId: null,
-        productionOrderId: batch.productionOrderId,
+        productionOrderId: batch.productionOrderId ?? null,
         userId: ctx.userId,
         type: MovementType.WASTE,
-        quantity: toWaste,
+        quantity: selection.quantity,
         reason: `Waste: ${reasonText}`,
         unitId,
         purchaseId: null,
-        locationId: null,
+        locationId: batch.locationId ?? null,
         targetBranchId: null,
         operationalTaskId: null,
         businessId: ctx.businessId,
@@ -183,26 +192,17 @@ export const WasteEngine = {
         updatedAt: now,
       })
 
-      wastedBatches.push({
-        inventoryId: batch.id,
-        quantity: toWaste,
-        cost,
-      })
-
-      remaining -= toWaste
+      wastedBatches.push({ inventoryId: batch.id, quantity: selection.quantity, cost })
     }
 
-    return {
-      success: true,
-      wastedBatches,
-    }
+    return { success: true, wastedBatches }
   },
 
   /**
    * Get waste summary for reporting.
    *
    * Aggregates waste movements by reason and product for analytics.
-   * Used for waste analysis dashboard and reports.
+   * Used by WasteAnalytics component and WasteRate card.
    */
   getWasteSummary(
     branchId: string,
@@ -210,7 +210,6 @@ export const WasteEngine = {
     movementCollection: typeof MovementCollectionType,
     inventoryCollection: typeof InventoryCollectionType,
   ): WasteSummary {
-    // Get all waste movements in date range
     const wasteMovements = [...movementCollection.values()].filter(
       m => m.branchId === branchId && m.type === MovementType.WASTE && new Date(m.createdAt) >= dateRange.start && new Date(m.createdAt) <= dateRange.end,
     )
@@ -219,15 +218,14 @@ export const WasteEngine = {
     const byReasonMap = new Map<string, { quantity: number; value: number; count: number }>()
 
     for (const movement of wasteMovements) {
-      // Extract reason from movement reason text (format: "Waste: {reason}")
+      // Extract reason from movement reason text (format: "Waste: {reason}" or "Waste: {reason} - {notes}")
       const reasonMatch = movement.reason?.match(/^Waste: (.+?)(?:\s-\s.+)?$/)
       const reason = reasonMatch ? reasonMatch[1] : 'Unknown'
 
-      // Get inventory to calculate value
       const inventory = inventoryCollection.get(movement.inventoryId)
       const value = inventory ? Math.round((inventory.costPrice || 0) * movement.quantity) : 0
 
-      const existing = byReasonMap.get(reason) || { quantity: 0, value: 0, count: 0 }
+      const existing = byReasonMap.get(reason) ?? { quantity: 0, value: 0, count: 0 }
       byReasonMap.set(reason, {
         quantity: existing.quantity + movement.quantity,
         value: existing.value + value,
@@ -236,52 +234,33 @@ export const WasteEngine = {
     }
 
     const byReason = Array.from(byReasonMap.entries())
-      .map(([reason, data]) => ({
-        reason,
-        quantity: data.quantity,
-        value: data.value,
-        count: data.count,
-      }))
-      .sort((a, b) => b.value - a.value) // Sort by value descending
+      .map(([reason, data]) => ({ reason, ...data }))
+      .sort((a, b) => b.value - a.value)
 
-    // Aggregate by product
+    // Aggregate by product (variantId)
     const byProductMap = new Map<string, { productName: string; quantity: number; value: number }>()
 
     for (const movement of wasteMovements) {
       const inventory = inventoryCollection.get(movement.inventoryId)
       if (!inventory) continue
 
-      const existing = byProductMap.get(movement.variantId) || {
-        productName: 'Unknown', // Will be populated from inventory
-        quantity: 0,
-        value: 0,
-      }
-
+      const existing = byProductMap.get(movement.variantId) ?? { productName: 'Unknown', quantity: 0, value: 0 }
       const value = Math.round((inventory.costPrice || 0) * movement.quantity)
 
       byProductMap.set(movement.variantId, {
-        productName: existing.productName, // Keep existing name if already set
+        productName: existing.productName,
         quantity: existing.quantity + movement.quantity,
         value: existing.value + value,
       })
     }
 
     const byProduct = Array.from(byProductMap.entries())
-      .map(([variantId, data]) => ({
-        variantId,
-        productName: data.productName,
-        quantity: data.quantity,
-        value: data.value,
-      }))
-      .sort((a, b) => b.value - a.value) // Sort by value descending
-
-    // Calculate totals
-    const totalQuantity = byReason.reduce((sum, r) => sum + r.quantity, 0)
-    const totalValue = byReason.reduce((sum, r) => sum + r.value, 0)
+      .map(([variantId, data]) => ({ variantId, ...data }))
+      .sort((a, b) => b.value - a.value)
 
     return {
-      totalQuantity,
-      totalValue,
+      totalQuantity: byReason.reduce((sum, r) => sum + r.quantity, 0),
+      totalValue: byReason.reduce((sum, r) => sum + r.value, 0),
       byReason,
       byProduct,
     }

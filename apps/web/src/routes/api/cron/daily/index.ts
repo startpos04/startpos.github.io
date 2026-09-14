@@ -27,6 +27,10 @@
  *   The overall run is fail-fast per job: if a job returns outcome='error'
  *   it is recorded but subsequent jobs still run (non-fatal isolation).
  *
+ * Job 7 (bos-usage-aggregate) is also independent and runs last.
+ * It writes BusinessUsageSummary.additionalMetrics consumed by the BOS
+ * recalculation batch (runRecalculationBatch) which is triggered separately.
+ *
  * OveragePolicy is read from configuration global defaults.
  * LifecycleThresholds are read from configuration global defaults.
  * Both fall back to the documented defaults when not configured.
@@ -45,6 +49,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import type { BillingProviderAdapter } from '@/lib/billing/billing-provider'
 import type { JobResult } from '@/lib/jobs'
 import { runBillingInvoiceGenerationJob } from '@/lib/jobs/billing-invoice-generation'
+import { runBosUsageAggregateJob } from '@/lib/jobs/bos-usage-aggregate'
 import { runComposableRenewalPreviewJob } from '@/lib/jobs/composable-renewal-preview'
 import { runPricingQuoteExpiryJob } from '@/lib/jobs/pricing-quote-expiry'
 import { runSubscriptionLifecycleJob } from '@/lib/jobs/subscription-lifecycle'
@@ -149,6 +154,11 @@ export const Route = createFileRoute('/api/cron/daily/' as never)({
 
         // Job 6 — send general subscription renewal reminders
         results.push(await runSubscriptionRenewalRemindersJob(rootPrisma, { reminderWindowDays: [7, 3, 1] }))
+
+        // Job 7 — aggregate per-business usage counts for BOS observation rules
+        // Writes BusinessUsageSummary.additionalMetrics (wasteRecordCount, supplierCount, etc.)
+        // Must run before runRecalculationBatch() if both are in the same cron window.
+        results.push(await runBosUsageAggregateJob(rootPrisma, now))
 
         // -------------------------------------------------------------------
         // 5. Summarise and respond

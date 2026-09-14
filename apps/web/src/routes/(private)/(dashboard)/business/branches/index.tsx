@@ -93,6 +93,14 @@ export function BranchesPage() {
 
   const handleAdd = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
+
+    if (atBranchLimit) {
+      toast.error(
+        `Branch limit reached. Your plan allows ${planBranchLimit} branch${planBranchLimit === 1 ? '' : 'es'}. Consider upgrading your plan or purchasing branch add-ons.`,
+      )
+      return
+    }
+
     setSelectedId('')
     showBranchSidebar(<CreateBranchSidebar />)
   }
@@ -214,29 +222,13 @@ export function BranchesPage() {
           }
           data={data}
           isFetching={isLoading}
-          creatable={
-            atBranchLimit
-              ? undefined
-              : {
-                  label: 'Add Branch',
-                  href: '#',
-                  onAdd: handleAdd,
-                }
-          }
+          creatable={{
+            label: 'Add Branch',
+            href: '#',
+            onAdd: handleAdd,
+          }}
           views={{ list: [{ type: 'table', columns, selectableRow: { onClick: openEdit, isSelected: (b: BranchRow) => b.id === selectedId } }] }}
         />
-
-        {atBranchLimit && (
-          <div className='rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20 p-3'>
-            <div className='text-sm text-amber-800 dark:text-amber-200'>
-              <div className='font-medium'>Branch limit reached</div>
-              <div className='mt-1'>
-                Your current plan allows {planBranchLimit} branch{planBranchLimit === 1 ? '' : 'es'}. Upgrade your plan or purchase branch add-ons to add more
-                locations.
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       <MountManager id={BRANCH_ASIDE_ID} />
