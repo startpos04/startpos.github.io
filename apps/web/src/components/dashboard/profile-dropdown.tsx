@@ -10,7 +10,7 @@ import type { ReactNode } from 'react'
 import { logout } from '@/lib/better-auth/auth-engine'
 import { authStore } from '@/lib/better-auth/auth-store'
 
-export const ProfileDropdown = ({ children }: { children?: ReactNode }) => {
+export const ProfileDropdown = ({ children, endShiftButton }: { children?: ReactNode; endShiftButton?: ReactNode }) => {
   const user = useStore(authStore, state => state.user)
   const navigate = useNavigate()
   const isOnline = useIsOnline()
@@ -63,6 +63,8 @@ export const ProfileDropdown = ({ children }: { children?: ReactNode }) => {
           <User className='size-4' />
           <span className='font-bold'>My Account</span>
         </DropdownMenuItem>
+
+        {endShiftButton}
 
         <DropdownMenuSeparator className='my-2' />
 

@@ -414,9 +414,8 @@ function POSPage() {
           else navigate({ to: user.landingPage })
         },
       })
-    } else if (user.vendorSession?.status !== SessionStatus.OPEN) {
-      MountManager.show(OpenSessionDialog, { key: 'open-session-dialog' })
     }
+    // OpenSessionDialog now handles its own visibility check
   }, [user, navigate, canReconcile])
 
   if (orderId && (isFetchingActiveOrders || isPosProductsLoading)) {
@@ -424,33 +423,38 @@ function POSPage() {
   }
 
   return (
-    <div className='flex h-screen flex-col w-full bg-background overflow-hidden'>
-      {/* Phase 2: Offline mode indicator */}
-      <div className='p-2 md:p-4 pb-0 empty:hidden'>
-        <OfflineModeIndicator />
-        {/* Barcode scanning indicator */}
-        {isScanning && (
-          <div className='mt-2 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center gap-2 animate-pulse'>
-            <div className='w-2 h-2 rounded-full bg-blue-500' />
-            <span className='text-xs font-medium text-blue-600 dark:text-blue-400'>Scanning barcode...</span>
-          </div>
-        )}
-      </div>
+    <>
+      {/* Start Shift Dialog - shown when session needed */}
+      <OpenSessionDialog />
 
-      <div className='flex flex-1 flex-col md:flex-row p-2 pt-0 md:p-4 md:pt-2 gap-2 md:gap-4 overflow-hidden'>
-        {isMobile ? (
-          <div className='flex items-center justify-end gap-1'>
-            <div className='w-10 ml-5'>
-              <ThemeToggle />
+      <div className='flex h-screen flex-col w-full bg-background overflow-hidden'>
+        {/* Phase 2: Offline mode indicator */}
+        <div className='p-2 md:p-4 pb-0 empty:hidden'>
+          <OfflineModeIndicator />
+          {/* Barcode scanning indicator */}
+          {isScanning && (
+            <div className='mt-2 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center gap-2 animate-pulse'>
+              <div className='w-2 h-2 rounded-full bg-blue-500' />
+              <span className='text-xs font-medium text-blue-600 dark:text-blue-400'>Scanning barcode...</span>
             </div>
-            {canCreateOrder ? <ActiveOrdersButton /> : null}
-            <ProfileDropdown />
-          </div>
-        ) : (
-          <ProductItems form={form} />
-        )}
-        <CartAside form={form} cashDrawerEnabled={cashDrawerEnabled} barcodeEnabled={barcodeEnabled} canPrintReceipt={canPrintReceipt} />
+          )}
+        </div>
+
+        <div className='flex flex-1 flex-col md:flex-row p-2 pt-0 md:p-4 md:pt-2 gap-2 md:gap-4 overflow-hidden'>
+          {isMobile ? (
+            <div className='flex items-center justify-end gap-1'>
+              <div className='w-10 ml-5'>
+                <ThemeToggle />
+              </div>
+              {canCreateOrder ? <ActiveOrdersButton /> : null}
+              <ProfileDropdown />
+            </div>
+          ) : (
+            <ProductItems form={form} />
+          )}
+          <CartAside form={form} cashDrawerEnabled={cashDrawerEnabled} barcodeEnabled={barcodeEnabled} canPrintReceipt={canPrintReceipt} />
+        </div>
       </div>
-    </div>
+    </>
   )
 }

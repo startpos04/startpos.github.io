@@ -50,7 +50,7 @@ interface PaymentDialogProps {
   onClose: () => void
   total: number
   onConfirm: (payments: PaymentLine[], compliance: { scPwdName?: string; scPwdIdNumber?: number; scPwdDiscount?: number }) => void
-  onSave: () => void
+  onSave?: () => void
   disabled?: boolean
   /**
    * When true the system requires a Bluetooth cash drawer to be connected
@@ -103,7 +103,7 @@ function HardwareCashDrawerStatus() {
   )
 }
 
-export function PaymentDialog({ open, onClose, total, onConfirm, cashDrawerRequired = false, canPrintReceipt = true }: PaymentDialogProps) {
+export function PaymentDialog({ open, onClose, total, onConfirm, onSave, cashDrawerRequired = false, canPrintReceipt = true }: PaymentDialogProps) {
   // Pure UI state — not form data
   const [scPwdOpen, setScPwdOpen] = useState(false)
   const [activeRowIndex, setActiveRowIndex] = useState(0)
@@ -600,20 +600,35 @@ export function PaymentDialog({ open, onClose, total, onConfirm, cashDrawerRequi
           )}
 
           {/* Complete Sale — Subscribe reads canSubmit from form state */}
-          <div className='p-4 border-t border-border/50 shrink-0'>
+          <div className='p-4 border-t border-border/50 shrink-0 space-y-2'>
             <form.Subscribe selector={s => [s.canSubmit, s.isSubmitting] as const}>
               {([canSubmit, isSubmitting]) => (
-                <Button
-                  disabled={!canSubmit || isSubmitting}
-                  onClick={() => form.handleSubmit()}
-                  className={cn(
-                    'w-full h-12 rounded-2xl font-black text-sm tracking-wide transition-all active:scale-[0.98]',
-                    canSubmit ? 'shadow-md shadow-primary/20' : 'opacity-40 cursor-not-allowed',
-                  )}
-                  variant={canSubmit ? 'default' : 'secondary'}
-                >
-                  Complete Sale
-                </Button>
+                <>
+                  <Button
+                    disabled={!canSubmit || isSubmitting}
+                    onClick={() => form.handleSubmit()}
+                    className={cn(
+                      'w-full h-12 rounded-2xl font-black text-sm tracking-wide transition-all active:scale-[0.98]',
+                      canSubmit ? 'shadow-md shadow-primary/20' : 'opacity-40 cursor-not-allowed',
+                    )}
+                    variant={canSubmit ? 'default' : 'secondary'}
+                  >
+                    Complete Sale
+                  </Button>
+
+                  <Button
+                    type='button'
+                    onClick={() => {
+                      onSave?.()
+                      onClose()
+                      form.reset()
+                    }}
+                    variant='outline'
+                    className='w-full h-10 rounded-xl font-bold text-sm'
+                  >
+                    Pay Later (Save Order)
+                  </Button>
+                </>
               )}
             </form.Subscribe>
           </div>

@@ -22,7 +22,19 @@ export const ProfileDropdown = () => {
   if (!user) return null
 
   return (
-    <BaseProfileDropdown>
+    <BaseProfileDropdown
+      endShiftButton={
+        caps.START_VENDOR_SESSION && user.vendorSession?.status === SessionStatus.OPEN ? (
+          <DropdownMenuItem
+            className='flex items-center gap-3 rounded-xl cursor-pointer py-3 px-3 transition-all focus:bg-accent hover:bg-accent'
+            onClick={handleEndShift}
+          >
+            <PanelTopClose className='w-4! h-4!' />
+            <span className='font-bold'>End Shift</span>
+          </DropdownMenuItem>
+        ) : null
+      }
+    >
       {user.role !== Role.CASHIER && (
         <DropdownMenuItem asChild className='flex items-center gap-3 rounded-xl cursor-pointer py-3 px-3 transition-all focus:bg-accent hover:bg-accent'>
           <Link to='/'>
@@ -38,16 +50,6 @@ export const ProfileDropdown = () => {
             <ClipboardPenLine className='w-4! h-4!' />
             <span className='font-bold'>Tasks</span>
           </Link>
-        </DropdownMenuItem>
-      )}
-      {/* End Shift — only when cash reconciliation (START_VENDOR_SESSION) is enabled */}
-      {caps.START_VENDOR_SESSION && user.vendorSession?.status === SessionStatus.OPEN && (
-        <DropdownMenuItem
-          className='flex items-center gap-3 rounded-xl cursor-pointer py-3 px-3 transition-all focus:bg-accent hover:bg-accent'
-          onClick={handleEndShift}
-        >
-          <PanelTopClose className='w-4! h-4!' />
-          <span className='font-bold'>End Shift</span>
         </DropdownMenuItem>
       )}
     </BaseProfileDropdown>

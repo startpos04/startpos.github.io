@@ -51,6 +51,7 @@ import { Route as privatedashboardBillingIndexRouteImport } from './routes/(priv
 import { Route as privatedashboardAccountIndexRouteImport } from './routes/(private)/(dashboard)/account/index'
 import { Route as ApiBillingWebhookStripeRouteImport } from './routes/api/billing/webhook/stripe'
 import { Route as privatedashboardSettingsComplianceRouteImport } from './routes/(private)/(dashboard)/settings/compliance'
+import { Route as privatedashboardPreparationWasteHistoryRouteImport } from './routes/(private)/(dashboard)/preparation/waste-history'
 import { Route as privatedashboardPreparationHistoryRouteImport } from './routes/(private)/(dashboard)/preparation/history'
 import { Route as privatedashboardBillingManualPaymentRouteImport } from './routes/(private)/(dashboard)/billing/manual-payment'
 import { Route as privatedashboardBusinessSuppliersRouteRouteImport } from './routes/(private)/(dashboard)/business/suppliers/route'
@@ -316,6 +317,12 @@ const privatedashboardSettingsComplianceRoute =
     path: '/compliance',
     getParentRoute: () => privatedashboardSettingsRouteRoute,
   } as any)
+const privatedashboardPreparationWasteHistoryRoute =
+  privatedashboardPreparationWasteHistoryRouteImport.update({
+    id: '/waste-history',
+    path: '/waste-history',
+    getParentRoute: () => privatedashboardPreparationRouteRoute,
+  } as any)
 const privatedashboardPreparationHistoryRoute =
   privatedashboardPreparationHistoryRouteImport.update({
     id: '/history',
@@ -551,6 +558,7 @@ export interface FileRoutesByFullPath {
   '/business/suppliers': typeof privatedashboardBusinessSuppliersRouteRouteWithChildren
   '/billing/manual-payment': typeof privatedashboardBillingManualPaymentRoute
   '/preparation/history': typeof privatedashboardPreparationHistoryRoute
+  '/preparation/waste-history': typeof privatedashboardPreparationWasteHistoryRoute
   '/settings/compliance': typeof privatedashboardSettingsComplianceRoute
   '/api/billing/webhook/stripe': typeof ApiBillingWebhookStripeRoute
   '/account/': typeof privatedashboardAccountIndexRoute
@@ -618,6 +626,7 @@ export interface FileRoutesByTo {
   '/register': typeof publicRegisterIndexRoute
   '/billing/manual-payment': typeof privatedashboardBillingManualPaymentRoute
   '/preparation/history': typeof privatedashboardPreparationHistoryRoute
+  '/preparation/waste-history': typeof privatedashboardPreparationWasteHistoryRoute
   '/settings/compliance': typeof privatedashboardSettingsComplianceRoute
   '/api/billing/webhook/stripe': typeof ApiBillingWebhookStripeRoute
   '/account': typeof privatedashboardAccountIndexRoute
@@ -698,6 +707,7 @@ export interface FileRoutesById {
   '/(private)/(dashboard)/business/suppliers': typeof privatedashboardBusinessSuppliersRouteRouteWithChildren
   '/(private)/(dashboard)/billing/manual-payment': typeof privatedashboardBillingManualPaymentRoute
   '/(private)/(dashboard)/preparation/history': typeof privatedashboardPreparationHistoryRoute
+  '/(private)/(dashboard)/preparation/waste-history': typeof privatedashboardPreparationWasteHistoryRoute
   '/(private)/(dashboard)/settings/compliance': typeof privatedashboardSettingsComplianceRoute
   '/api/billing/webhook/stripe': typeof ApiBillingWebhookStripeRoute
   '/(private)/(dashboard)/account/': typeof privatedashboardAccountIndexRoute
@@ -775,6 +785,7 @@ export interface FileRouteTypes {
     | '/business/suppliers'
     | '/billing/manual-payment'
     | '/preparation/history'
+    | '/preparation/waste-history'
     | '/settings/compliance'
     | '/api/billing/webhook/stripe'
     | '/account/'
@@ -842,6 +853,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/billing/manual-payment'
     | '/preparation/history'
+    | '/preparation/waste-history'
     | '/settings/compliance'
     | '/api/billing/webhook/stripe'
     | '/account'
@@ -921,6 +933,7 @@ export interface FileRouteTypes {
     | '/(private)/(dashboard)/business/suppliers'
     | '/(private)/(dashboard)/billing/manual-payment'
     | '/(private)/(dashboard)/preparation/history'
+    | '/(private)/(dashboard)/preparation/waste-history'
     | '/(private)/(dashboard)/settings/compliance'
     | '/api/billing/webhook/stripe'
     | '/(private)/(dashboard)/account/'
@@ -1279,6 +1292,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/compliance'
       preLoaderRoute: typeof privatedashboardSettingsComplianceRouteImport
       parentRoute: typeof privatedashboardSettingsRouteRoute
+    }
+    '/(private)/(dashboard)/preparation/waste-history': {
+      id: '/(private)/(dashboard)/preparation/waste-history'
+      path: '/waste-history'
+      fullPath: '/preparation/waste-history'
+      preLoaderRoute: typeof privatedashboardPreparationWasteHistoryRouteImport
+      parentRoute: typeof privatedashboardPreparationRouteRoute
     }
     '/(private)/(dashboard)/preparation/history': {
       id: '/(private)/(dashboard)/preparation/history'
@@ -1695,6 +1715,7 @@ const privatedashboardBusinessRouteRouteWithChildren =
 
 interface privatedashboardPreparationRouteRouteChildren {
   privatedashboardPreparationHistoryRoute: typeof privatedashboardPreparationHistoryRoute
+  privatedashboardPreparationWasteHistoryRoute: typeof privatedashboardPreparationWasteHistoryRoute
   privatedashboardPreparationIndexRoute: typeof privatedashboardPreparationIndexRoute
 }
 
@@ -1702,6 +1723,8 @@ const privatedashboardPreparationRouteRouteChildren: privatedashboardPreparation
   {
     privatedashboardPreparationHistoryRoute:
       privatedashboardPreparationHistoryRoute,
+    privatedashboardPreparationWasteHistoryRoute:
+      privatedashboardPreparationWasteHistoryRoute,
     privatedashboardPreparationIndexRoute:
       privatedashboardPreparationIndexRoute,
   }

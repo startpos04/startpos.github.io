@@ -1,6 +1,5 @@
 import { Form } from '@platform/components/custom/form'
-import { MoneyInput } from '@platform/components/custom/form/money-input'
-import { TextAreaInput } from '@platform/components/custom/form/text-area-input'
+import { CashDenominationInput } from '@platform/components/custom/form/cash-denomination-input'
 import { Button } from '@platform/components/ui/button'
 import { Skeleton } from '@platform/components/ui/skeleton'
 import { membershipCollection, operationalTaskCollection, transactionCollection, vendorSessionCollection } from '@platform/db/collections'
@@ -9,9 +8,9 @@ import { useAppForm } from '@platform/hooks/form'
 import dayjs from '@platform/lib/dayjs'
 import MountManager, { type MountProps } from '@platform/lib/mount-manager'
 import { and, count, eq, gte, inArray, lte, sum, useLiveQuery } from '@tanstack/react-db'
-import { formOptions } from '@tanstack/react-form'
+import { formOptions, useStore } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
-import { AlertCircle, ShieldCheck } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 import { Role, SessionStatus, TaskStatus } from 'prisma/generated/prisma/enums'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -109,6 +108,10 @@ export function ReconcileNow({ onClose }: MountProps) {
     },
   })
 
+  // Read closing cash for denomination input
+  const closingCash = useStore(form.store, s => s.values.closingCash)
+  const variance = closingCash - expectedCash
+
   const handleAuthenticate = async () => {
     const result = await new Promise<boolean>(resolve => {
       MountManager.show(AuthPrompt, {
@@ -139,82 +142,92 @@ export function ReconcileNow({ onClose }: MountProps) {
   }
 
   return (
-    <Form onSubmit={form.handleSubmit} className='space-y-4'>
-      <div className='grid grid-cols-2 gap-3'>
-        {/* Row 1: Activity Overview */}
-        <div className='p-4 rounded-2xl bg-muted/30 border border-border/50'>
-          <p className='text-[10px] uppercase font-bold text-muted-foreground mb-1 tracking-wider'>Transactions</p>
+    <Form onSubmit={form.handleSubmit} className='space-y-2'>
+      {/* Summary Grid - Ultra Compact */}
+      <div className='grid grid-cols-4 gap-1.5'>
+        <div className='p-2 rounded-lg bg-muted/30 border border-border/50'>
+          <p className='text-[8px] uppercase font-bold text-muted-foreground mb-0.5 tracking-wider'>Txns</p>
           {transactions.isLoading ? (
-            <Skeleton className='h-12 w-full rounded-2xl' />
+            <Skeleton className='h-6 w-full rounded-lg' />
           ) : (
-            <p className='text-xl font-bold tracking-tight'>{transactions.data?.[0]?.totalTransactions || 0}</p>
+            <p className='text-base font-bold tracking-tight'>{transactions.data?.[0]?.totalTransactions || 0}</p>
           )}
         </div>
 
-        <div className='p-4 rounded-2xl bg-muted/30 border border-border/50'>
-          <p className='text-[10px] uppercase font-bold text-muted-foreground mb-1 tracking-wider'>Total Sales</p>
+        <div className='p-2 rounded-lg bg-muted/30 border border-border/50'>
+          <p className='text-[8px] uppercase font-bold text-muted-foreground mb-0.5 tracking-wider'>Sales</p>
           {transactions.isLoading ? (
-            <Skeleton className='h-12 w-full rounded-2xl' />
+            <Skeleton className='h-6 w-full rounded-lg' />
           ) : (
-            <p className='text-xl font-bold tracking-tight'>{PriceEngine.format(Number(transactions.data?.[0]?.totalSales) || 0)}</p>
+            <p className='text-base font-bold tracking-tight'>{PriceEngine.format(Number(transactions.data?.[0]?.totalSales) || 0)}</p>
           )}
         </div>
 
-        {/* Row 2: Starting Point & Final Target */}
-        <div className='p-4 rounded-2xl bg-muted/30 border border-border/50'>
-          <p className='text-[10px] uppercase font-bold text-muted-foreground mb-1 tracking-wider'>Opening Cash</p>
+        <div className='p-2 rounded-lg bg-muted/30 border border-border/50'>
+          <p className='text-[8px] uppercase font-bold text-muted-foreground mb-0.5 tracking-wider'>Opening</p>
           {transactions.isLoading ? (
-            <Skeleton className='h-12 w-full rounded-2xl' />
+            <Skeleton className='h-6 w-full rounded-lg' />
           ) : (
-            <p className='text-xl font-bold tracking-tight'>{PriceEngine.format(Number(user.vendorSession?.openingCash) || 0)}</p>
+            <p className='text-base font-bold tracking-tight'>{PriceEngine.format(Number(user.vendorSession?.openingCash) || 0)}</p>
           )}
         </div>
 
-        <div className='p-4 rounded-2xl bg-primary/10 border border-primary/20 shadow-sm'>
-          <p className='text-[10px] uppercase font-bold text-primary mb-1 tracking-wider'>Expected Cash</p>
+        <div className='p-2 rounded-lg bg-primary/10 border border-primary/20'>
+          <p className='text-[8px] uppercase font-bold text-primary mb-0.5 tracking-wider'>Expected</p>
           {transactions.isLoading ? (
-            <Skeleton className='h-12 w-full rounded-2xl' />
+            <Skeleton className='h-6 w-full rounded-lg' />
           ) : (
-            <div className='flex items-baseline gap-1'>
-              <p className='text-xl font-black text-primary'>{PriceEngine.format(expectedCash)}</p>
+            <p className='text-base font-black text-primary'>{PriceEngine.format(expectedCash)}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Compact Actual Cash Display with Variance */}
+      <div className='rounded-lg bg-background border border-border/60 p-2'>
+        <div className='flex items-center justify-between gap-3'>
+          <div className='flex-1'>
+            <p className='text-[8px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5'>Actual Cash</p>
+            <p className='text-xl font-black font-mono tabular-nums text-foreground leading-none'>{PriceEngine.format(closingCash)}</p>
+          </div>
+          {closingCash > 0 && (
+            <div className='text-right'>
+              <p className='text-[8px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5'>Variance</p>
+              <p
+                className={`text-lg font-black font-mono tabular-nums leading-none ${
+                  variance === 0 ? 'text-emerald-500' : variance > 0 ? 'text-blue-500' : 'text-amber-500'
+                }`}
+              >
+                {variance === 0 ? '✓' : variance > 0 ? `+${PriceEngine.format(variance)}` : PriceEngine.format(variance)}
+              </p>
             </div>
           )}
         </div>
       </div>
 
-      <form.Field name='closingCash' children={field => <MoneyInput field={field} label='Actual Cash in Drawer' />} />
-
-      <form.Field
-        name='notes'
-        children={field => <TextAreaInput field={field} label='Discrepancy Notes (Optional)' placeholder='Explain any shortages or overs...' />}
+      {/* Cash Denominations - Compact */}
+      <CashDenominationInput
+        value={closingCash}
+        onChange={cents => form.setFieldValue('closingCash', cents)}
+        onExact={() => form.setFieldValue('closingCash', expectedCash)}
+        onClear={() => form.setFieldValue('closingCash', 0)}
+        isExactSelected={closingCash === expectedCash}
+        showActions={true}
+        className='space-y-2'
       />
 
-      <div className='bg-amber-50 p-4 rounded-2xl border border-amber-100 flex gap-3'>
-        <AlertCircle className='h-5 w-5 text-amber-500 shrink-0 mt-0.5' />
-        <p className='text-xs text-amber-700 leading-relaxed'>
-          Confirming this will lock your sales for this shift and generate a reconciliation task for the supervisor.
-        </p>
-      </div>
-
+      {/* Submit Button */}
       <form.Subscribe
         selector={state => [state.canSubmit, state.isSubmitting]}
         children={([canSubmit, isSubmitting]) => (
-          <div className='flex flex-col gap-2 w-full'>
-            {/* Primary Button: End Shift (Standard Task Creation) */}
-            <Button
-              type='submit'
-              disabled={!canSubmit || transactions.isLoading}
-              className='w-full h-12 rounded-xl text-md font-bold gap-2 shadow-lg shadow-primary/20'
-            >
-              {isSubmitting ? (
-                'Authenticating & Closing...'
-              ) : (
-                <>
-                  <ShieldCheck className='size-5' /> Reconcile Now (Supervisor)
-                </>
-              )}
-            </Button>
-          </div>
+          <Button type='submit' disabled={!canSubmit || transactions.isLoading || closingCash === 0} className='w-full h-10 rounded-lg text-sm font-bold gap-2'>
+            {isSubmitting ? (
+              'Closing...'
+            ) : (
+              <>
+                <ShieldCheck className='size-4' /> Reconcile with {PriceEngine.format(closingCash)}
+              </>
+            )}
+          </Button>
         )}
       />
     </Form>

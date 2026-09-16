@@ -6,7 +6,7 @@ import MountManager from '@platform/lib/mount-manager'
 import { useLiveQuery } from '@tanstack/react-db'
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { syncServerToLocal } from '@/lib/better-auth/auth-engine'
 import { authStore } from '@/lib/better-auth/auth-store'
 import { TermsUpdateModal } from './-components/terms-update-modal'
@@ -36,6 +36,13 @@ function RouteComponent() {
   const navigate = useNavigate({ from: '/' })
   const localAuths = useLiveQuery(q => q.from({ localAuth: localAuthCollection }).select(({ localAuth }) => localAuth))
 
+  // Track the last user ID we cleared MountManager for. We only want to
+  // clear when the identity actually changes (different user or logout) —
+  // not on every re-render or every time localAuths becomes ready.
+  // Clearing on every effect run is what caused MountManager-managed modals
+  // (like OpenSessionDialog) to be wiped on page refresh.
+  const lastClearedUserId = useRef<string | null | undefined>(undefined)
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: it will cause  Maximum update depth exceeded error
   useEffect(() => {
     if (!localAuths.isReady || !localAuths.data) return
@@ -58,7 +65,14 @@ function RouteComponent() {
       syncServerToLocal(serverUser)
     }
 
-    MountManager.clear()
+    // Only clear MountManager when the authenticated user identity changes
+    // (e.g. a different user logs in, or the previous session was cleared).
+    // Clearing on every effect run wiped modals — like OpenSessionDialog —
+    // that were shown immediately after this effect fired on page refresh.
+    if (lastClearedUserId.current !== localUser.id) {
+      lastClearedUserId.current = localUser.id
+      MountManager.clear()
+    }
   }, [localAuths.isReady, navigate, user])
 
   if (!user) return <Loading className='w-screen h-screen' />

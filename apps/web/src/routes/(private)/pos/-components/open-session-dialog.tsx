@@ -1,19 +1,32 @@
+/**
+ * open-session-dialog.tsx — Start Shift modal
+ *
+ * Shown when an employee needs to start a shift to use the POS.
+ * The employee cannot proceed until they open a session.
+ *
+ * Behaviour:
+ *   - Blocks navigation — no close button, no backdrop dismiss.
+ *   - Creates a vendor session and operational task in dbTransaction.
+ *   - Updates authStore so the session check passes immediately without reload.
+ *
+ * When shown:
+ *   - When user has no active vendor session and canReconcile capability is enabled.
+ */
+
 import { Form } from '@platform/components/custom/form'
-import { MoneyInput } from '@platform/components/custom/form/money-input'
-import { TextAreaInput } from '@platform/components/custom/form/text-area-input'
+import { CashDenominationInput } from '@platform/components/custom/form/cash-denomination-input'
 import { Button } from '@platform/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@platform/components/ui/dialog'
 import { operationalTaskCollection, vendorSessionCollection } from '@platform/db/collections'
 import { dbTransaction } from '@platform/db/local-db-transaction'
-import type { MountProps } from '@platform/lib/mount-manager'
-import { useForm } from '@tanstack/react-form'
-import { useNavigate } from '@tanstack/react-router'
-import { Info, LayoutDashboard, LogOut, PlayCircle } from 'lucide-react'
-import { Role, SessionStatus, TaskStatus, TaskType } from 'prisma/generated/prisma/enums'
+import { cn } from '@platform/lib/utils'
+import { useForm, useStore } from '@tanstack/react-form'
+import { Banknote, Info, PlayCircle } from 'lucide-react'
+import { SessionStatus, TaskStatus, TaskType } from 'prisma/generated/prisma/enums'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { logout } from '@/lib/better-auth/auth-engine'
 import { authStore, useAuthenticatedUser } from '@/lib/better-auth/auth-store'
+import { PriceEngine } from '@/lib/conversion/price-engine'
 
 export const createSessionSchema = z
   .object({
@@ -33,13 +46,31 @@ export const createSessionSchema = z
 
 export type CreateSessionFormData = z.infer<typeof createSessionSchema>
 
-export function OpenSessionDialog({ open, onClose }: MountProps) {
+// ---------------------------------------------------------------------------
+// Session check
+// ---------------------------------------------------------------------------
+
+export function needsSession(vendorSession: { status: SessionStatus } | null, canReconcile: boolean): boolean {
+  // If cash reconciliation is not enabled, sessions are not required
+  if (!canReconcile) return false
+
+  // If no session exists or session is closed, need to start a new one
+  return !vendorSession || vendorSession.status !== SessionStatus.OPEN
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+export function OpenSessionDialog() {
   const user = useAuthenticatedUser()
-  const navigate = useNavigate()
+
+  // Reactively compute if session is needed - will update when user.vendorSession changes
+  const shouldShow = needsSession(user.vendorSession, true)
 
   const form = useForm({
     defaultValues: {
-      openingCash: 100000, // Common starting float in PH (₱1,000)
+      openingCash: 0, // Start at 0, user builds with denominations
       notes: '',
     },
     validators: {
@@ -103,71 +134,89 @@ export function OpenSessionDialog({ open, onClose }: MountProps) {
       // Update auth store AFTER the transaction confirms — moving this inside
       // the dbTransaction callback fired it prematurely, causing the POS guard
       // useEffect to re-run with a stale user reference and re-show the dialog.
-      authStore.setState(state => {
-        state.user.vendorSession = session
-        return state
-      })
+      authStore.setState(state => ({
+        ...state,
+        user: {
+          ...state.user,
+          vendorSession: session,
+        },
+      }))
 
-      toast.success('Session started successfully')
-      onClose()
+      toast.success('Shift started successfully')
+      // Dialog will automatically close because shouldShow will become false
     },
   })
 
+  // Read opening cash for denomination input handlers
+  const openingCash = useStore(form.store, s => s.values.openingCash)
+
+  // Don't render if session is not needed
+  if (!shouldShow) return null
+
   return (
-    <Dialog open={open}>
-      <DialogContent className='sm:max-w-lg p-4 overflow-hidden border-none shadow-2xl bg-background gap-0 [&>button]:hidden'>
-        <DialogHeader className='mb-6'>
-          <DialogTitle className='text-3xl font-bold tracking-tight'>Start Your Shift</DialogTitle>
-          <DialogDescription className='text-emerald-100 text-base'>
-            Recording new stock for <span className='font-bold text-white'> Ready for the shift? Set your starting cash to begin recording sales.</span>
-          </DialogDescription>
+    <Dialog
+      open={shouldShow}
+      // Intentionally no onOpenChange — this dialog cannot be dismissed
+      // without starting a session. The employee must start a shift to continue.
+    >
+      <DialogContent
+        className='sm:max-w-lg'
+        data-testid='open-session-dialog'
+        // Remove the default close button by overriding onPointerDownOutside
+        onPointerDownOutside={e => e.preventDefault()}
+        onEscapeKeyDown={e => e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle className='text-2xl font-bold tracking-tight flex items-center gap-2'>
+            <Banknote className='w-6 h-6 text-primary' />
+            Start Your Shift
+          </DialogTitle>
+          <DialogDescription className='text-base'>Count your starting cash to begin.</DialogDescription>
         </DialogHeader>
 
         <Form onSubmit={form.handleSubmit} className='space-y-4'>
-          <form.Field name='openingCash' children={field => <MoneyInput field={field} label={`Starting Cash (${user.configs.CURRENCY})`} />} />
+          {/* Current Amount Display */}
+          <div className='rounded-xl bg-primary/5 border border-primary/20 p-4'>
+            <p className='text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1'>Starting Cash</p>
+            <p className='text-3xl font-black font-mono tabular-nums text-primary leading-none'>{PriceEngine.format(openingCash)}</p>
+          </div>
 
-          <form.Field name='notes' children={field => <TextAreaInput field={field} label='Optional Notes' placeholder='e.g. Shift 1 - Monday' />} />
+          {/* Cash Denominations */}
+          <CashDenominationInput
+            value={openingCash}
+            onChange={cents => form.setFieldValue('openingCash', cents)}
+            onClear={() => form.setFieldValue('openingCash', 0)}
+            showActions={true}
+          />
 
-          <div className='bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex gap-3'>
-            <Info className='h-5 w-5 text-blue-500 shrink-0 mt-0.5' />
-            <p className='text-xs text-blue-700 leading-relaxed'>
-              Opening the session will track all transactions until the drawer is closed at the end of the shift.
+          {/* Info Banner */}
+          <div className='bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800 flex gap-3'>
+            <Info className='h-4 w-4 text-blue-500 shrink-0 mt-0.5' />
+            <p className='text-xs text-blue-700 dark:text-blue-300 leading-relaxed'>
+              Opening the session will track all transactions until you close the shift.
             </p>
           </div>
 
+          {/* Submit Button */}
           <form.Subscribe
             selector={state => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button type='submit' disabled={!canSubmit} className='w-full h-12 rounded-xl text-md font-bold gap-2 shadow-lg shadow-primary/20'>
+              <Button
+                type='submit'
+                disabled={!canSubmit || openingCash === 0}
+                className={cn('w-full gap-2 h-12 text-base font-bold')}
+                data-testid='start-shift-button'
+              >
                 {isSubmitting ? (
-                  'Opening Drawer...'
+                  'Starting Shift...'
                 ) : (
                   <>
-                    <PlayCircle className='h-5! w-5!' /> Start Shift
+                    <PlayCircle className='h-5 w-5' /> Start Shift with {PriceEngine.format(openingCash)}
                   </>
                 )}
               </Button>
             )}
           />
-          <Button
-            type='button'
-            variant='ghost'
-            className='w-full h-12 text-muted-foreground font-bold hover:text-foreground hover:bg-muted rounded-xl flex items-center justify-center gap-2'
-            onClick={() => {
-              user.role === Role.CASHIER ? logout({ onSuccess: () => navigate({ to: '/login' }) }) : navigate({ to: user.landingPage })
-              onClose()
-            }}
-          >
-            {user.role === Role.CASHIER ? (
-              <>
-                <LogOut className='h-5! w-5!' /> Logout
-              </>
-            ) : (
-              <>
-                <LayoutDashboard className='h-5! w-5!' /> Go to Dashboard
-              </>
-            )}
-          </Button>
         </Form>
       </DialogContent>
     </Dialog>
