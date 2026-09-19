@@ -75,7 +75,18 @@ export const productCols = {
         const primaryVariant = product.variants?.[0]
         if (!primaryVariant) return <span className='text-muted-foreground text-xs text-center block'>—</span>
 
-        const maxServings = stockResultToNumber(PosStockEngine.calculateRemainingYield(product, primaryVariant, selectedComponentIds, cartItems, orderItems))
+        // For products with no recipe (no components), show raw inventory
+        const hasComponents = primaryVariant.components && primaryVariant.components.length > 0
+        let maxServings = 0
+
+        if (!hasComponents) {
+          // Direct inventory - sum up all inventory quantities
+          maxServings = (primaryVariant.inventory || []).reduce((sum: number, inv: any) => sum + (inv?.quantity || 0), 0)
+        } else {
+          // Recipe-based - calculate yield
+          const stockResult = PosStockEngine.calculateRemainingYield(product, primaryVariant, selectedComponentIds, cartItems, orderItems)
+          maxServings = stockResultToNumber(stockResult)
+        }
 
         // Unlimited sentinel — product has no tracked stock (SERVICE or provisional)
         if (maxServings === Infinity) {

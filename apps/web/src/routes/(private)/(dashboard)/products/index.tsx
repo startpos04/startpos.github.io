@@ -155,6 +155,7 @@ function RouteComponent() {
             ...(hasInventory ? [productCols.ingredients(h)] : []),
             productCols.addons(h),
             productCols.variants(h),
+            ...(hasInventory ? [productCols.servings(h, { cartItems: [], orderItems })] : []),
             productCols.cost(h), // Always show cost
             productCols.price(h),
             productCols.netMargin(h), // Always show net margin
@@ -262,7 +263,9 @@ function RouteComponent() {
                   if (!primaryVariant) return null
 
                   const isProvisional = isProvisionalProduct(product)
-                  const maxServings = PosStockEngine.calculateRemainingYield(product, primaryVariant, [], [], orderItems)
+                  const stockResult = PosStockEngine.calculateRemainingYield(product, primaryVariant, [], [], orderItems)
+                  const maxServings = typeof stockResult === 'number' ? stockResult : Number.POSITIVE_INFINITY
+                  const isUnlimited = typeof stockResult !== 'number'
                   const recipeComponents = primaryVariant.components?.filter(c => !c.isAddon) || []
                   const addonComponents = primaryVariant.components?.filter(c => c.isAddon) || []
 
@@ -296,8 +299,8 @@ function RouteComponent() {
 
                   const suggestedPriceCents = targetMargin < 1 ? finalCostCents / (1 - targetMargin) : finalCostCents
 
-                  const stockPercentage = Math.min(Math.max((maxServings / 100) * 100, 0), 100)
-                  const isLowStock = maxServings < primaryVariant.lowStockThreshold! || user.configs.LOW_STOCK_THRESHOLD
+                  const stockPercentage = isUnlimited ? 100 : Math.min(Math.max((maxServings / 100) * 100, 0), 100)
+                  const isLowStock = !isUnlimited && maxServings < (primaryVariant.lowStockThreshold || user.configs.LOW_STOCK_THRESHOLD || 10)
 
                   return (
                     <Card
@@ -326,7 +329,7 @@ function RouteComponent() {
                               variant={maxServings === 0 ? 'destructive' : isLowStock ? 'warning' : 'secondary'}
                               className='rounded-full px-3 shadow-sm backdrop-blur-md bg-background/80 dark:bg-card/80'
                             >
-                              {maxServings === 0 ? 'Out of Stock' : `${numeral(maxServings).format('0,0')} in stock`}
+                              {maxServings === 0 ? 'Out of Stock' : isUnlimited ? 'Available' : `${numeral(maxServings).format('0,0')} available`}
                             </Badge>
                           ) : null}
                         </div>
@@ -366,7 +369,7 @@ function RouteComponent() {
                           <div className='space-y-1.5'>
                             <div className='flex justify-between text-[10px] font-bold uppercase tracking-tight'>
                               <span className='text-muted-foreground'>Stock Availability</span>
-                              <span className={cn(isLowStock ? 'text-destructive' : 'text-primary')}>{maxServings} units</span>
+                              <span className={cn(isLowStock ? 'text-destructive' : 'text-primary')}>{isUnlimited ? 'Unlimited' : `${maxServings} units`}</span>
                             </div>
                             <Progress
                               value={stockPercentage}

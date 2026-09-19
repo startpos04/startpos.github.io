@@ -1,4 +1,5 @@
 business_id,business_name,business_slug,business_type,branch_id,branch_name,serial_number,min_invoice,max_invoice,branch_code,user_id,user_email,user_name,user_role,user_image
+e2e-org-1,E2E Test Restaurant,e2e-resto,RESTAURANT,e2e-branch-1,E2E Main Branch,SN-E2E-001,0,999999,00001,e2e-owner-1,e2e.owner@test.com,E2E Owner,OWNER,https://api.dicebear.com/7.x/avataaars/svg?seed=e2eOwner
 e2e-org-1,E2E Test Restaurant,e2e-resto,RESTAURANT,e2e-branch-1,E2E Main Branch,SN-E2E-001,0,999999,00001,e2e-admin-1,e2e.admin@test.com,E2E Admin,ADMIN,https://api.dicebear.com/7.x/avataaars/svg?seed=e2eAdmin
 e2e-org-1,E2E Test Restaurant,e2e-resto,RESTAURANT,e2e-branch-1,E2E Main Branch,SN-E2E-001,0,999999,00001,e2e-supervisor-1,e2e.supervisor@test.com,E2E Supervisor,SUPERVISOR,https://api.dicebear.com/7.x/avataaars/svg?seed=e2eSup
 e2e-org-1,E2E Test Restaurant,e2e-resto,RESTAURANT,e2e-branch-1,E2E Main Branch,SN-E2E-001,0,999999,00001,e2e-cashier-1,e2e.cashier@test.com,E2E Cashier One,CASHIER,https://api.dicebear.com/7.x/avataaars/svg?seed=e2eCash

@@ -223,42 +223,60 @@ export function QuickAddDialog({ open, onClose, searchQuery, sku, onConfirm }: Q
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-sm gap-0 p-0 overflow-hidden rounded-3xl [&>button]:hidden'>
+      <DialogContent
+        className='sm:max-w-md p-0 bg-background overflow-hidden rounded-2xl border border-border/60 shadow-2xl [&>button]:hidden'
+        onEscapeKeyDown={e => e.preventDefault()}
+        onInteractOutside={e => e.preventDefault()}
+      >
         {/* Header */}
-        <DialogHeader className='flex flex-row items-center justify-between px-6 pt-6 pb-4 border-b border-border gap-4 space-y-0'>
-          <div className='flex items-center gap-3'>
-            <div className='w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0'>
-              <PackagePlus className='w-4 h-4 text-primary' />
+        <DialogHeader className='px-5 pt-5 pb-4 shrink-0'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0'>
+                <PackagePlus className='w-5 h-5 text-primary' />
+              </div>
+              <div>
+                <DialogTitle className='text-xl font-bold tracking-tight'>Quick Add Product</DialogTitle>
+                <p className='text-xs text-muted-foreground mt-1'>Sell now, catalog later</p>
+              </div>
             </div>
-            <div>
-              <DialogTitle className='text-base font-bold leading-tight'>Quick Add</DialogTitle>
-              <p className='text-xs text-muted-foreground mt-0.5'>Sell now, complete the catalog later</p>
-            </div>
+            <Button type='button' variant='ghost' size='icon' onClick={onClose} className='shrink-0 rounded-xl h-8 w-8'>
+              <X className='w-4 h-4' />
+            </Button>
           </div>
-          <Button type='button' variant='ghost' size='icon' onClick={onClose} className='shrink-0 rounded-xl'>
-            <X className='w-4 h-4' />
-          </Button>
         </DialogHeader>
 
         {/* Form */}
-        <Form onSubmit={form.handleSubmit} className='p-6 space-y-4'>
+        <Form onSubmit={form.handleSubmit} className='px-5 pb-5 space-y-4'>
           <form.Field name='name'>
-            {field => <TextInput field={field} label='Product name' placeholder='e.g. Banana Chips, Haircut, Repair fee' autoFocus />}
+            {field => (
+              <TextInput field={field} label='Product Name' placeholder='e.g. Banana Chips, Haircut, Repair fee' autoFocus className='h-11 text-base' />
+            )}
           </form.Field>
 
-          <form.Field name='sku'>{field => <TextInput field={field} label='SKU (Optional)' placeholder='e.g. PROD-001' />}</form.Field>
+          <form.Field name='sku'>
+            {field => <TextInput field={field} label='SKU (Optional)' placeholder='e.g. PROD-001' className='h-11 text-base' />}
+          </form.Field>
 
-          <form.Field name='price'>{field => <MoneyInput field={field} label='Price' placeholder='0.00' />}</form.Field>
-
-          <p className='text-xs text-muted-foreground leading-snug'>
-            This creates a provisional product. You can add a category, image, and cost price later from the Products page.
-          </p>
+          <form.Field name='price'>
+            {field => (
+              <div className='space-y-2'>
+                <MoneyInput field={field} label='Selling Price' placeholder='0.00' className='h-11 text-base font-mono' />
+                <div className='rounded-lg bg-blue-50 dark:bg-blue-950/30 p-3 border border-blue-200 dark:border-blue-800 flex gap-2'>
+                  <PackagePlus className='h-4 w-4 text-blue-500 shrink-0 mt-0.5' />
+                  <p className='text-xs text-blue-700 dark:text-blue-300 leading-relaxed'>
+                    This creates a provisional product. Add category, image, and cost price later from the Products page.
+                  </p>
+                </div>
+              </div>
+            )}
+          </form.Field>
 
           <form.Subscribe selector={s => [s.canSubmit, s.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
-              <Button type='submit' disabled={!canSubmit} className='w-full gap-2'>
-                <PackagePlus className='w-4 h-4' />
-                {isSubmitting ? 'Adding…' : 'Add to cart'}
+              <Button type='submit' disabled={!canSubmit} className='w-full gap-2 h-11 text-base font-bold rounded-xl'>
+                <PackagePlus className='w-5 h-5' />
+                {isSubmitting ? 'Adding to Cart...' : 'Add to Cart'}
               </Button>
             )}
           </form.Subscribe>

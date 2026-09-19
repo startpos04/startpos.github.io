@@ -12,6 +12,7 @@ import { count, eq, useLiveQuery } from '@tanstack/react-db'
 import { createFileRoute } from '@tanstack/react-router'
 import { Box, Edit, X } from 'lucide-react'
 import { type Product, type ProductVariant, type Unit, VariantAttributeType } from 'prisma/generated/prisma/browser'
+import { PosStockEngine } from '@/lib/conversion/pos-stock-engine'
 import { PriceEngine } from '@/lib/conversion/price-engine'
 import { fetchPosProducts, type posProduct } from '@/lib/queries/fetch-pos-products'
 import { closeProductSidebar, showProductSidebar } from '../-components/product-sidebar'
@@ -68,7 +69,13 @@ function RouteComponent({ productId: propId, onClose }: RouteComponentProps) {
   if (!product) return <div className='p-6 text-center text-sm text-muted-foreground'>Product not found.</div>
 
   const totalSales = (orderItemCounts ?? []).reduce((acc, row) => acc + row.count, 0)
-  const totalStock = product.variants.reduce((acc, v) => acc + (v.inventory ?? []).reduce((s: number, inv: any) => s + inv.quantity, 0), 0)
+
+  // Show raw inventory total (not calculated servings)
+  const totalServings = product.variants.reduce((acc, v) => {
+    const rawStock = (v.inventory || []).reduce((sum, inv) => sum + (inv?.quantity || 0), 0)
+    return acc + rawStock
+  }, 0)
+
   const prices = product.variants.map(v => v.price)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
@@ -220,8 +227,8 @@ function RouteComponent({ productId: propId, onClose }: RouteComponentProps) {
             <>
               <div className='w-px h-6 bg-border' />
               <div>
-                <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Stock</p>
-                <p className='text-sm font-black'>{totalStock}</p>
+                <p className='text-[9px] font-bold uppercase tracking-wider text-muted-foreground'>Servings Left</p>
+                <p className='text-sm font-black'>{totalServings === Number.POSITIVE_INFINITY ? '∞' : totalServings}</p>
               </div>
             </>
           )}

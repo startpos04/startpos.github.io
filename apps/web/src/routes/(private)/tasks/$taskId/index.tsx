@@ -215,10 +215,10 @@ function RouteComponent({ taskId: propId, onClose }: RouteComponentProps) {
       </div>
 
       {/* Tab content — fills remaining height */}
-      <div className='flex-1 overflow-hidden flex flex-col'>
+      <div className='flex-1 overflow-hidden flex flex-col min-h-0'>
         <Tab
           defaultValue='Task Details'
-          className='grow h-1'
+          className='flex-1 min-h-0'
           tabClass='px-4'
           tabs={[
             { label: 'Task Details', Component: TaskDetailsTab, task, form },
