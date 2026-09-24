@@ -1,0 +1,116 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 700 500" class="w-full h-full">
+    <!-- Background -->
+    <rect width="700" height="500" fill="#ffffff"/>
+    
+    <!-- Header -->
+    <rect width="700" height="50" fill="#f8fafc"/>
+    <rect x="0" y="49" width="700" height="1" fill="#e2e8f0"/>
+    
+    <!-- Title -->
+    <text x="30" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Cash Reconciliation - Shift #247</text>
+    <text x="580" y="30" font-family="system-ui" font-size="12" fill="#64748b">Maria Santos • Main Branch</text>
+    
+    <!-- Shift Status -->
+    <rect x="30" y="70" width="640" height="60" rx="8" fill="#f0fdf4" stroke="#dcfce7"/>
+    <circle cx="50" cy="90" r="6" fill="#16a34a"/>
+    <text x="70" y="85" font-family="system-ui" font-size="14" font-weight="600" fill="#15803d">Shift Open</text>
+    <text x="70" y="98" font-family="system-ui" font-size="11" fill="#15803d">Started: 8:00 AM • Duration: 6h 32m</text>
+    <text x="70" y="112" font-family="system-ui" font-size="11" fill="#15803d">Opening Cash: ₱2,500.00</text>
+    
+    <rect x="500" y="85" width="120" height="30" rx="6" fill="#dc2626"/>
+    <text x="560" y="103" font-family="system-ui" font-size="12" font-weight="500" fill="white" text-anchor="middle">Close Shift</text>
+    
+    <!-- Sales Summary -->
+    <text x="30" y="165" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b">Today's Sales Summary</text>
+    
+    <rect x="30" y="175" width="200" height="120" rx="8" fill="white" stroke="#e2e8f0"/>
+    <text x="45" y="195" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Total Transactions</text>
+    <text x="45" y="210" font-family="system-ui" font-size="24" font-weight="700" fill="#10b981">127</text>
+    <text x="45" y="225" font-family="system-ui" font-size="10" fill="#64748b">↗️ +15 from yesterday</text>
+    
+    <text x="45" y="250" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Gross Sales</text>
+    <text x="45" y="265" font-family="system-ui" font-size="20" font-weight="700" fill="#10b981">₱18,450.75</text>
+    <text x="45" y="280" font-family="system-ui" font-size="10" fill="#64748b">Average: ₱145.28 per sale</text>
+    
+    <rect x="250" y="175" width="200" height="120" rx="8" fill="white" stroke="#e2e8f0"/>
+    <text x="265" y="195" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Payment Breakdown</text>
+    
+    <rect x="265" y="205" width="120" height="15" rx="7" fill="#f1f5f9"/>
+    <rect x="265" y="205" width="80" height="15" rx="7" fill="#10b981"/>
+    <text x="265" y="235" font-family="system-ui" font-size="10" fill="#64748b">💵 Cash: ₱12,315.50 (67%)</text>
+    
+    <rect x="265" y="245" width="120" height="15" rx="7" fill="#f1f5f9"/>
+    <rect x="265" y="245" width="40" height="15" rx="7" fill="#3b82f6"/>
+    <text x="265" y="275" font-family="system-ui" font-size="10" fill="#64748b">💳 Card: ₱6,135.25 (33%)</text>
+    
+    <rect x="470" y="175" width="200" height="120" rx="8" fill="white" stroke="#e2e8f0"/>
+    <text x="485" y="195" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Expected Cash</text>
+    <text x="485" y="215" font-family="system-ui" font-size="11" fill="#64748b">Opening Cash</text>
+    <text x="620" y="215" font-family="system-ui" font-size="11" fill="#1e293b" text-anchor="end">₱2,500.00</text>
+    <text x="485" y="230" font-family="system-ui" font-size="11" fill="#64748b">Cash Sales</text>
+    <text x="620" y="230" font-family="system-ui" font-size="11" fill="#10b981" text-anchor="end">+₱12,315.50</text>
+    <text x="485" y="245" font-family="system-ui" font-size="11" fill="#64748b">Change Given</text>
+    <text x="620" y="245" font-family="system-ui" font-size="11" fill="#dc2626" text-anchor="end">-₱1,250.00</text>
+    
+    <rect x="485" y="255" width="120" height="1" fill="#e2e8f0"/>
+    <text x="485" y="275" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Expected Total</text>
+    <text x="620" y="275" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b" text-anchor="end">₱13,565.50</text>
+    
+    <!-- Cash Count Section -->
+    <text x="30" y="330" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b">Physical Cash Count</text>
+    
+    <rect x="30" y="340" width="300" height="140" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="45" y="360" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Denomination Breakdown</text>
+    
+    <!-- Denomination rows -->
+    <text x="45" y="380" font-family="system-ui" font-size="10" fill="#64748b">₱1000 x 8</text>
+    <text x="280" y="380" font-family="system-ui" font-size="10" fill="#1e293b" text-anchor="end">₱8,000.00</text>
+    
+    <text x="45" y="395" font-family="system-ui" font-size="10" fill="#64748b">₱500 x 6</text>
+    <text x="280" y="395" font-family="system-ui" font-size="10" fill="#1e293b" text-anchor="end">₱3,000.00</text>
+    
+    <text x="45" y="410" font-family="system-ui" font-size="10" fill="#64748b">₱200 x 4</text>
+    <text x="280" y="410" font-family="system-ui" font-size="10" fill="#1e293b" text-anchor="end">₱800.00</text>
+    
+    <text x="45" y="425" font-family="system-ui" font-size="10" fill="#64748b">₱100 x 12</text>
+    <text x="280" y="425" font-family="system-ui" font-size="10" fill="#1e293b" text-anchor="end">₱1,200.00</text>
+    
+    <text x="45" y="440" font-family="system-ui" font-size="10" fill="#64748b">₱50 & smaller</text>
+    <text x="280" y="440" font-family="system-ui" font-size="10" fill="#1e293b" text-anchor="end">₱485.50</text>
+    
+    <rect x="45" y="450" width="240" height="1" fill="#e2e8f0"/>
+    <text x="45" y="470" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Counted Total</text>
+    <text x="280" y="470" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b" text-anchor="end">₱13,485.50</text>
+    
+    <!-- Variance Analysis -->
+    <rect x="350" y="340" width="320" height="140" rx="8" fill="#fef2f2" stroke="#fecaca"/>
+    <text x="365" y="360" font-family="system-ui" font-size="12" font-weight="500" fill="#dc2626">Variance Analysis</text>
+    
+    <text x="365" y="380" font-family="system-ui" font-size="11" fill="#64748b">Expected Cash</text>
+    <text x="635" y="380" font-family="system-ui" font-size="11" fill="#1e293b" text-anchor="end">₱13,565.50</text>
+    
+    <text x="365" y="395" font-family="system-ui" font-size="11" fill="#64748b">Actual Count</text>
+    <text x="635" y="395" font-family="system-ui" font-size="11" fill="#1e293b" text-anchor="end">₱13,485.50</text>
+    
+    <rect x="365" y="405" width="240" height="1" fill="#ef4444"/>
+    <text x="365" y="425" font-family="system-ui" font-size="12" font-weight="600" fill="#dc2626">Variance (Short)</text>
+    <text x="635" y="425" font-family="system-ui" font-size="12" font-weight="600" fill="#dc2626" text-anchor="end">-₱80.00</text>
+    
+    <text x="365" y="445" font-family="system-ui" font-size="10" fill="#dc2626">Reason: Incorrect change given</text>
+    
+    <rect x="365" y="455" width="100" height="20" rx="4" fill="#dc2626"/>
+    <text x="415" y="467" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">Record Variance</text>
+    
+    <rect x="475" y="455" width="100" height="20" rx="4" fill="#10b981"/>
+    <text x="525" y="467" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">Complete Shift</text>
+  </svg>
+</div>

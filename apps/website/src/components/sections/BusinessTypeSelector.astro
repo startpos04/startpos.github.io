@@ -1,24 +1,32 @@
 ---
+import GroceryWorkflow from '../diagrams/GroceryWorkflow.astro'
+import RestaurantWorkflow from '../diagrams/RestaurantWorkflow.astro'
+import RetailWorkflow from '../diagrams/RetailWorkflow.astro'
+
 const businessTypes = [
   {
     id: 'retail',
     icon: '🛒',
     label: 'Retail',
-    tagline: 'Everything a retail shop needs. Nothing it doesn\'t.',
-    description: 'Manage your product catalogue, track inventory across locations, and process sales quickly. Built for clothing, hardware, electronics, and any general retail business.',
+    tagline: "Everything a retail shop needs. Nothing it doesn't.",
+    description:
+      'Manage your product catalogue, track inventory across locations, and process sales quickly. Built for clothing, hardware, electronics, and any general retail business.',
     highlights: ['Product variants & SKUs', 'Barcode support', 'Inventory tracking', 'Sales history & CSV export'],
     href: '/use-cases/retail',
     color: 'blue',
+    diagram: RetailWorkflow,
   },
   {
     id: 'restaurant',
     icon: '🍽',
     label: 'Restaurant',
     tagline: 'From table to kitchen — in one tap.',
-    description: 'Take orders, send them to the kitchen, and track dine-in, take-out, and delivery — all from one screen. Built for cafes, quick-service restaurants, and full-service dining.',
+    description:
+      'Take orders, send them to the kitchen, and track dine-in, take-out, and delivery — all from one screen. Built for cafes, quick-service restaurants, and full-service dining.',
     highlights: ['Order queue & kitchen display', 'Dine-in / take-out / delivery', 'Add-ons & modifiers', 'Deposit & table tracking'],
     href: '/use-cases/restaurant',
     color: 'amber',
+    diagram: RestaurantWorkflow,
   },
   {
     id: 'grocery',
@@ -29,6 +37,7 @@ const businessTypes = [
     highlights: ['Barcode scanning', 'Expiry date tracking', 'Low-stock alerts', 'Purchase orders & receiving'],
     href: '/use-cases/grocery',
     color: 'emerald',
+    diagram: GroceryWorkflow,
   },
 ]
 ---
@@ -105,17 +114,9 @@ const businessTypes = [
                 </a>
               </div>
 
-              <!-- Visual placeholder -->
+              <!-- Real Workflow Diagram -->
               <div class="relative">
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden aspect-video flex items-center justify-center">
-                  <div class="text-center text-slate-300">
-                    <div class="text-6xl mb-3">{bt.icon}</div>
-                    <p class="text-sm font-medium text-slate-400">
-                      [Screenshot: {bt.label} workflow]
-                    </p>
-                    <p class="text-xs text-slate-300 mt-1">Replace with actual app screenshot</p>
-                  </div>
-                </div>
+                <bt.diagram class="w-full" />
               </div>
 
             </div>

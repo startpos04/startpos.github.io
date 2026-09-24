@@ -1,13 +1,14 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import RestaurantWorkflow from '../../components/diagrams/RestaurantWorkflow.astro'
 import FinalCTA from '../../components/sections/FinalCTA.astro'
 import { APP_URL } from '../../constants'
+import BaseLayout from '../../layouts/BaseLayout.astro'
 
 const features = [
   {
     icon: '📋',
     title: 'Order queue & kitchen display',
-    description: 'Orders land in the kitchen the moment they\'re placed. Status flows: received → in progress → ready → served.',
+    description: "Orders land in the kitchen the moment they're placed. Status flows: received → in progress → ready → served.",
   },
   {
     icon: '🪑',
@@ -39,7 +40,7 @@ const features = [
 const orderFlow = [
   { icon: '📝', title: 'Order taken', desc: 'Cashier enters order at POS or on mobile' },
   { icon: '🔔', title: 'Kitchen notified', desc: 'Order appears on kitchen display instantly' },
-  { icon: '🍳', title: 'Prepared', desc: 'Staff marks items ready as they\'re completed' },
+  { icon: '🍳', title: 'Prepared', desc: "Staff marks items ready as they're completed" },
   { icon: '✅', title: 'Served & closed', desc: 'Bill settled, receipt printed, table cleared' },
 ]
 ---
@@ -77,15 +78,9 @@ const orderFlow = [
           </div>
         </div>
 
-        <!-- Visual placeholder -->
+        <!-- Real Restaurant Workflow Diagram -->
         <div class="relative">
-          <div class="bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl aspect-video flex items-center justify-center">
-            <div class="text-center p-8">
-              <div class="text-6xl mb-4">🍽</div>
-              <p class="text-sm text-slate-400 font-medium">[Screenshot: Restaurant order queue and kitchen display]</p>
-              <p class="text-xs text-slate-500 mt-1">Order queue · kitchen status · dine-in / take-out / delivery</p>
-            </div>
-          </div>
+          <RestaurantWorkflow class="w-full" />
         </div>
       </div>
     </div>

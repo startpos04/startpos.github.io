@@ -2,6 +2,8 @@
 import FinalCTA from '../components/sections/FinalCTA.astro'
 import { APP_URL } from '../constants'
 import BaseLayout from '../layouts/BaseLayout.astro'
+import { ROADMAP_ITEMS } from '../data/roadmap'
+import FeatureDiagram from '../components/shared/FeatureDiagram.astro'
 
 // ---------------------------------------------------------------------------
 // Feature modules — grounded in capability-registry.ts + feature-library.ts
@@ -313,64 +315,16 @@ const MODULES: FeatureModule[] = [
   },
 
   // -- Coming Soon ------------------------------------------------------------
-  {
-    id: 'loyalty',
-    icon: '⭐',
-    title: 'Loyalty Points',
-    plan: 'Premium+',
-    planVariant: 'orange',
-    tagline: 'Keep regulars coming back with points they can actually spend.',
-    description:
-      'A native loyalty programme — no third-party app required. Customers earn points on every purchase and redeem them for discounts. Currently in development.',
-    bullets: [
-      'Points earned per transaction, configurable earn rate per plan',
-      'Redeemable at checkout for a discount on the next purchase',
-      'Customer-facing points balance visible at checkout',
-      'Points history per customer profile',
-      'Expiry rules for points to encourage timely redemption',
-    ],
-    capabilities: ['LOYALTY_POINTS'],
+  // Import from shared roadmap data to ensure consistency
+  ...ROADMAP_ITEMS.map(item => ({
+    ...item,
     comingSoon: true,
-  },
-  {
-    id: 'kds',
-    icon: '🖥️',
-    title: 'Kitchen Display System',
-    plan: 'Enterprise+',
-    planVariant: 'orange',
-    tagline: 'Incoming orders, straight to the kitchen screen.',
-    description: "A dedicated kitchen display that shows every order the moment it's placed. Keeps front-of-house and kitchen in sync without paper tickets.",
-    bullets: [
-      'Real-time order display on a separate kitchen screen or tablet',
-      'Order status updates visible to both kitchen and front-of-house',
-      'Filter by station — hot food, cold prep, drinks',
-      'Audio alert on new order arrival',
-    ],
-    capabilities: ['KITCHEN_DISPLAY'],
-    comingSoon: true,
-  },
-  {
-    id: 'delivery',
-    icon: '🚚',
-    title: 'Delivery Management',
-    plan: 'Enterprise+',
-    planVariant: 'orange',
-    tagline: 'Coordinate deliveries without switching apps.',
-    description: 'Assign delivery orders to drivers, track delivery status, and manage delivery zones from inside Start POS.',
-    bullets: [
-      'Delivery order type at checkout with address capture',
-      'Driver assignment and status tracking',
-      'Delivery zone management',
-      'Integration with the order queue',
-    ],
-    capabilities: ['DELIVERY_MANAGEMENT'],
-    comingSoon: true,
-  },
+  })),
 ]
 
 // Group for the overview grid
 const LIVE_MODULES = MODULES.filter(m => !m.comingSoon)
-const COMING_MODULES = MODULES.filter(m => m.comingSoon)
+const COMING_MODULES = ROADMAP_ITEMS
 
 const PLAN_COLORS: Record<string, string> = {
   emerald: 'bg-emerald-100 text-emerald-700',
@@ -507,15 +461,14 @@ const PLAN_COLORS: Record<string, string> = {
             </a>
           </div>
 
-          <!-- Screenshot placeholder -->
+          <!-- Feature diagram -->
           <div class:list={['reveal reveal-delay-2', i % 2 !== 0 && 'lg:order-1']}>
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden aspect-[4/3] flex items-center justify-center">
-              <div class="text-center p-10">
-                <div class="text-6xl mb-4" aria-hidden="true">{mod.icon}</div>
-                <p class="text-sm font-semibold text-slate-400">{mod.title}</p>
-                <p class="text-xs text-slate-300 mt-1">Screenshot coming soon</p>
-              </div>
-            </div>
+            <FeatureDiagram 
+              moduleId={mod.id} 
+              icon={mod.icon} 
+              title={mod.title} 
+              class="aspect-[4/3] shadow-xl" 
+            />
           </div>
 
         </div>

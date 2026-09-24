@@ -1,0 +1,160 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 700 500" class="w-full h-full">
+    <!-- Background -->
+    <rect width="700" height="500" fill="#ffffff"/>
+    
+    <!-- Header -->
+    <rect width="700" height="50" fill="#f8fafc"/>
+    <rect x="0" y="49" width="700" height="1" fill="#e2e8f0"/>
+    
+    <!-- Title -->
+    <text x="30" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Purchase Order #PO-2024-0156</text>
+    
+    <!-- Status and Actions -->
+    <rect x="450" y="15" width="80" height="25" rx="12" fill="#fbbf24"/>
+    <text x="490" y="30" font-family="system-ui" font-size="10" font-weight="500" fill="#92400e" text-anchor="middle">Pending Approval</text>
+    
+    <rect x="540" y="15" width="60" height="25" rx="4" fill="#10b981"/>
+    <text x="570" y="30" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">Approve</text>
+    
+    <rect x="610" y="15" width="60" height="25" rx="4" fill="#ef4444"/>
+    <text x="640" y="30" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">Reject</text>
+    
+    <!-- Supplier Information -->
+    <rect x="30" y="70" width="320" height="100" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="45" y="90" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Supplier Details</text>
+    
+    <rect x="45" y="100" width="35" height="35" rx="6" fill="#dbeafe"/>
+    <text x="62.5" y="122" font-family="system-ui" font-size="16" text-anchor="middle">🏢</text>
+    
+    <text x="90" y="115" font-family="system-ui" font-size="13" font-weight="600" fill="#1e293b">Metro Food Supplies Inc.</text>
+    <text x="90" y="128" font-family="system-ui" font-size="10" fill="#64748b">📧 orders@metrofood.ph</text>
+    <text x="90" y="140" font-family="system-ui" font-size="10" fill="#64748b">📞 (02) 8555-1234</text>
+    
+    <text x="45" y="160" font-family="system-ui" font-size="10" fill="#64748b">Payment Terms: Net 30 days • Delivery: 2-3 business days</text>
+    
+    <!-- Order Information -->
+    <rect x="360" y="70" width="310" height="100" rx="8" fill="#f0fdf4" stroke="#dcfce7"/>
+    <text x="375" y="90" font-family="system-ui" font-size="12" font-weight="600" fill="#15803d">Order Information</text>
+    
+    <text x="375" y="110" font-family="system-ui" font-size="11" fill="#64748b">Order Date:</text>
+    <text x="450" y="110" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Dec 19, 2024</text>
+    
+    <text x="375" y="125" font-family="system-ui" font-size="11" fill="#64748b">Delivery Date:</text>
+    <text x="450" y="125" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Dec 22, 2024</text>
+    
+    <text x="375" y="140" font-family="system-ui" font-size="11" fill="#64748b">Delivery Location:</text>
+    <text x="450" y="140" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Main Branch - Storage</text>
+    
+    <text x="375" y="155" font-family="system-ui" font-size="11" fill="#64748b">Requested by:</text>
+    <text x="450" y="155" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Maria Santos (Supervisor)</text>
+    
+    <!-- Purchase Items Table -->
+    <text x="30" y="195" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b">Order Items</text>
+    
+    <!-- Table Header -->
+    <rect x="30" y="205" width="640" height="30" fill="#f8fafc"/>
+    <rect x="30" y="234" width="640" height="1" fill="#e2e8f0"/>
+    
+    <text x="50" y="223" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Item</text>
+    <text x="280" y="223" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Qty</text>
+    <text x="340" y="223" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Unit</text>
+    <text x="400" y="223" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Unit Price</text>
+    <text x="480" y="223" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Total</text>
+    <text x="560" y="223" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Stock Level</text>
+    
+    <!-- Item Row 1 -->
+    <rect x="30" y="235" width="640" height="35" fill="white"/>
+    <rect x="30" y="269" width="640" height="1" fill="#f1f5f9"/>
+    
+    <rect x="40" y="242" width="20" height="20" rx="4" fill="#fef3c7"/>
+    <text x="50" y="254" font-family="system-ui" font-size="12" text-anchor="middle">🥓</text>
+    <text x="70" y="250" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Premium Bacon</text>
+    <text x="70" y="262" font-family="system-ui" font-size="9" fill="#64748b">Fresh smoked bacon strips</text>
+    
+    <text x="280" y="255" font-family="system-ui" font-size="11" fill="#1e293b">5</text>
+    <text x="340" y="255" font-family="system-ui" font-size="11" fill="#64748b">kg</text>
+    <text x="400" y="255" font-family="system-ui" font-size="11" fill="#1e293b">₱280.00</text>
+    <text x="480" y="255" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">₱1,400.00</text>
+    
+    <rect x="560" y="247" width="45" height="14" rx="7" fill="#fecaca"/>
+    <text x="582.5" y="256" font-family="system-ui" font-size="9" font-weight="500" fill="#dc2626" text-anchor="middle">0.5 kg</text>
+    
+    <!-- Item Row 2 -->
+    <rect x="30" y="270" width="640" height="35" fill="white"/>
+    <rect x="30" y="304" width="640" height="1" fill="#f1f5f9"/>
+    
+    <rect x="40" y="277" width="20" height="20" rx="4" fill="#dcfce7"/>
+    <text x="50" y="289" font-family="system-ui" font-size="12" text-anchor="middle">🍞</text>
+    <text x="70" y="285" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Fresh Bread Loaves</text>
+    <text x="70" y="297" font-family="system-ui" font-size="9" fill="#64748b">White bread for sandwiches</text>
+    
+    <text x="280" y="290" font-family="system-ui" font-size="11" fill="#1e293b">50</text>
+    <text x="340" y="290" font-family="system-ui" font-size="11" fill="#64748b">pcs</text>
+    <text x="400" y="290" font-family="system-ui" font-size="11" fill="#1e293b">₱45.00</text>
+    <text x="480" y="290" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">₱2,250.00</text>
+    
+    <rect x="560" y="282" width="45" height="14" rx="7" fill="#fef3c7"/>
+    <text x="582.5" y="291" font-family="system-ui" font-size="9" font-weight="500" fill="#d97706" text-anchor="middle">12 pcs</text>
+    
+    <!-- Item Row 3 -->
+    <rect x="30" y="305" width="640" height="35" fill="white"/>
+    <rect x="30" y="339" width="640" height="1" fill="#f1f5f9"/>
+    
+    <rect x="40" y="312" width="20" height="20" rx="4" fill="#dbeafe"/>
+    <text x="50" y="324" font-family="system-ui" font-size="12" text-anchor="middle">🥤</text>
+    <text x="70" y="320" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Coca Cola 500ml</text>
+    <text x="70" y="332" font-family="system-ui" font-size="9" fill="#64748b">24-pack case</text>
+    
+    <text x="280" y="325" font-family="system-ui" font-size="11" fill="#1e293b">10</text>
+    <text x="340" y="325" font-family="system-ui" font-size="11" fill="#64748b">cases</text>
+    <text x="400" y="325" font-family="system-ui" font-size="11" fill="#1e293b">₱520.00</text>
+    <text x="480" y="325" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">₱5,200.00</text>
+    
+    <rect x="560" y="317" width="45" height="14" rx="7" fill="#dcfce7"/>
+    <text x="582.5" y="326" font-family="system-ui" font-size="9" font-weight="500" fill="#16a34a" text-anchor="middle">3 cases</text>
+    
+    <!-- Order Summary -->
+    <rect x="30" y="360" width="300" height="120" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="45" y="380" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Approval Required</text>
+    
+    <text x="45" y="400" font-family="system-ui" font-size="10" fill="#64748b">This purchase order requires supervisor</text>
+    <text x="45" y="412" font-family="system-ui" font-size="10" fill="#64748b">approval before sending to supplier.</text>
+    
+    <text x="45" y="435" font-family="system-ui" font-size="11" fill="#64748b">Approver:</text>
+    <text x="100" y="435" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">John Martinez (Manager)</text>
+    
+    <text x="45" y="450" font-family="system-ui" font-size="11" fill="#64748b">Budget Impact:</text>
+    <text x="120" y="450" font-family="system-ui" font-size="11" font-weight="500" fill="#dc2626">₱8,850 / ₱15,000 (59%)</text>
+    
+    <rect x="45" y="460" width="80" height="20" rx="4" fill="#3b82f6"/>
+    <text x="85" y="472" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">Send for Review</text>
+    
+    <!-- Total Summary -->
+    <rect x="350" y="360" width="320" height="120" rx="8" fill="#f0fdf4" stroke="#dcfce7"/>
+    <text x="365" y="380" font-family="system-ui" font-size="12" font-weight="600" fill="#15803d">Order Summary</text>
+    
+    <text x="365" y="400" font-family="system-ui" font-size="11" fill="#64748b">Subtotal</text>
+    <text x="635" y="400" font-family="system-ui" font-size="11" fill="#1e293b" text-anchor="end">₱8,850.00</text>
+    
+    <text x="365" y="415" font-family="system-ui" font-size="11" fill="#64748b">Delivery Fee</text>
+    <text x="635" y="415" font-family="system-ui" font-size="11" fill="#1e293b" text-anchor="end">₱150.00</text>
+    
+    <text x="365" y="430" font-family="system-ui" font-size="11" fill="#64748b">Tax (12%)</text>
+    <text x="635" y="430" font-family="system-ui" font-size="11" fill="#1e293b" text-anchor="end">₱1,080.00</text>
+    
+    <rect x="365" y="440" width="240" height="1" fill="#16a34a"/>
+    <text x="365" y="460" font-family="system-ui" font-size="13" font-weight="600" fill="#15803d">Total Amount</text>
+    <text x="635" y="460" font-family="system-ui" font-size="13" font-weight="600" fill="#15803d" text-anchor="end">₱10,080.00</text>
+    
+    <text x="365" y="475" font-family="system-ui" font-size="10" fill="#64748b">Expected delivery: Dec 22, 2024</text>
+  </svg>
+</div>

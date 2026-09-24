@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
   /* Brand colours */
-  --color-primary: #10b981;        /* Emerald 500 — matches the app */
-  --color-primary-dark: #059669;   /* Emerald 600 */
-  --color-primary-light: #6ee7b7;  /* Emerald 300 */
-  --color-accent: #8b5cf6;         /* Violet 500 — complementary accent */
+  --color-primary: #10b981; /* Emerald 500 — matches the app */
+  --color-primary-dark: #059669; /* Emerald 600 */
+  --color-primary-light: #6ee7b7; /* Emerald 300 */
+  --color-accent: #8b5cf6; /* Violet 500 — complementary accent */
 
   /* Dark hero / CTA backgrounds */
-  --color-dark: #0f172a;           /* Slate 900 */
-  --color-dark-card: #1e293b;      /* Slate 800 */
-  --color-dark-border: #334155;    /* Slate 700 */
+  --color-dark: #0f172a; /* Slate 900 */
+  --color-dark-card: #1e293b; /* Slate 800 */
+  --color-dark-border: #334155; /* Slate 700 */
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 html {
@@ -34,7 +34,9 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 .reveal.visible {
@@ -42,12 +44,24 @@ body {
   transform: none;
 }
 
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-.reveal-delay-5 { transition-delay: 0.5s; }
-.reveal-delay-6 { transition-delay: 0.6s; }
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+.reveal-delay-4 {
+  transition-delay: 0.4s;
+}
+.reveal-delay-5 {
+  transition-delay: 0.5s;
+}
+.reveal-delay-6 {
+  transition-delay: 0.6s;
+}
 
 /* ---------- Presentation mode ---------- */
 body.present-mode header,
@@ -70,7 +84,9 @@ body.present-mode .present-section {
 
 /* ---------- Floating nav gradient on scroll ---------- */
 .site-header {
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .site-header.scrolled {
@@ -100,4 +116,59 @@ body.present-mode .present-section {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* ---------- Offline diagram animations ---------- */
+.offline-step {
+  transition: all 0.3s ease;
+}
+
+.connection-status-demo {
+  position: relative;
+}
+
+.connection-status-demo [data-state],
+.cloud-status-demo [data-cloud] {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.connection-status-demo [data-state].hidden,
+.cloud-status-demo [data-cloud].hidden {
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.branch-item {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.branch-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Ensure SVG icons are perfectly centered */
+svg {
+  display: block;
+}
+
+/* Pulse animation for sync indicators */
+@keyframes sync-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse {
+  animation: sync-pulse 2s ease-in-out infinite;
 }

@@ -1,0 +1,132 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 700 450" class="w-full h-full">
+    <!-- Background -->
+    <rect width="700" height="450" fill="#ffffff"/>
+    
+    <!-- Header -->
+    <rect width="700" height="50" fill="#f8fafc"/>
+    <rect x="0" y="49" width="700" height="1" fill="#e2e8f0"/>
+    
+    <!-- Title -->
+    <text x="30" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Inventory Management</text>
+    
+    <!-- Add Product Button -->
+    <rect x="580" y="15" width="100" height="30" rx="6" fill="#10b981"/>
+    <text x="630" y="33" font-family="system-ui" font-size="11" font-weight="500" fill="white" text-anchor="middle">+ Add Product</text>
+    
+    <!-- Search and Filter Bar -->
+    <rect x="30" y="70" width="300" height="35" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="40" y="90" font-family="system-ui" font-size="12" fill="#64748b">🔍 Search products...</text>
+    
+    <rect x="350" y="70" width="100" height="35" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="375" y="90" font-family="system-ui" font-size="12" fill="#64748b">All Categories</text>
+    <text x="435" y="90" font-family="system-ui" font-size="12" fill="#64748b">▼</text>
+    
+    <rect x="470" y="70" width="80" height="35" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="485" y="90" font-family="system-ui" font-size="12" fill="#64748b">Low Stock</text>
+    
+    <!-- Table Header -->
+    <rect x="30" y="125" width="640" height="35" fill="#f8fafc"/>
+    <rect x="30" y="159" width="640" height="1" fill="#e2e8f0"/>
+    
+    <text x="50" y="145" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Product</text>
+    <text x="250" y="145" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Category</text>
+    <text x="350" y="145" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Stock</text>
+    <text x="420" y="145" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Price</text>
+    <text x="500" y="145" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Status</text>
+    <text x="600" y="145" font-family="system-ui" font-size="11" font-weight="600" fill="#475569">Actions</text>
+    
+    <!-- Product Row 1 - In Stock -->
+    <rect x="30" y="160" width="640" height="40" fill="white"/>
+    <rect x="30" y="199" width="640" height="1" fill="#f1f5f9"/>
+    
+    <rect x="40" y="170" width="20" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="50" y="182" font-family="system-ui" font-size="12" text-anchor="middle">🥤</text>
+    <text x="70" y="177" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Coca Cola 500ml</text>
+    <text x="70" y="190" font-family="system-ui" font-size="10" fill="#64748b">SKU: CC500ML</text>
+    
+    <text x="250" y="180" font-family="system-ui" font-size="11" fill="#64748b">Beverages</text>
+    
+    <text x="350" y="177" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">245 units</text>
+    <text x="350" y="190" font-family="system-ui" font-size="10" fill="#64748b">Min: 50</text>
+    
+    <text x="420" y="180" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">₱25.00</text>
+    
+    <rect x="500" y="172" width="60" height="16" rx="8" fill="#dcfce7"/>
+    <text x="530" y="182" font-family="system-ui" font-size="9" font-weight="500" fill="#16a34a" text-anchor="middle">In Stock</text>
+    
+    <text x="610" y="180" font-family="system-ui" font-size="11" fill="#3b82f6">Edit</text>
+    
+    <!-- Product Row 2 - Low Stock -->
+    <rect x="30" y="200" width="640" height="40" fill="white"/>
+    <rect x="30" y="239" width="640" height="1" fill="#f1f5f9"/>
+    
+    <rect x="40" y="210" width="20" height="20" rx="4" fill="#fef3c7"/>
+    <text x="50" y="222" font-family="system-ui" font-size="12" text-anchor="middle">🍟</text>
+    <text x="70" y="217" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">French Fries Large</text>
+    <text x="70" y="230" font-family="system-ui" font-size="10" fill="#64748b">SKU: FF-LRG</text>
+    
+    <text x="250" y="220" font-family="system-ui" font-size="11" fill="#64748b">Snacks</text>
+    
+    <text x="350" y="217" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">15 units</text>
+    <text x="350" y="230" font-family="system-ui" font-size="10" fill="#f59e0b">Min: 30</text>
+    
+    <text x="420" y="220" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">₱45.00</text>
+    
+    <rect x="500" y="212" width="60" height="16" rx="8" fill="#fef3c7"/>
+    <text x="530" y="222" font-family="system-ui" font-size="9" font-weight="500" fill="#d97706" text-anchor="middle">Low Stock</text>
+    
+    <text x="610" y="220" font-family="system-ui" font-size="11" fill="#3b82f6">Reorder</text>
+    
+    <!-- Product Row 3 - Out of Stock -->
+    <rect x="30" y="240" width="640" height="40" fill="white"/>
+    <rect x="30" y="279" width="640" height="1" fill="#f1f5f9"/>
+    
+    <rect x="40" y="250" width="20" height="20" rx="4" fill="#fecaca"/>
+    <text x="50" y="262" font-family="system-ui" font-size="12" text-anchor="middle">🍔</text>
+    <text x="70" y="257" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Premium Burger</text>
+    <text x="70" y="270" font-family="system-ui" font-size="10" fill="#64748b">SKU: BURG-PREM</text>
+    
+    <text x="250" y="260" font-family="system-ui" font-size="11" fill="#64748b">Meals</text>
+    
+    <text x="350" y="257" font-family="system-ui" font-size="11" font-weight="500" fill="#dc2626">0 units</text>
+    <text x="350" y="270" font-family="system-ui" font-size="10" fill="#dc2626">Min: 20</text>
+    
+    <text x="420" y="260" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">₱85.00</text>
+    
+    <rect x="500" y="252" width="70" height="16" rx="8" fill="#fecaca"/>
+    <text x="535" y="262" font-family="system-ui" font-size="9" font-weight="500" fill="#dc2626" text-anchor="middle">Out of Stock</text>
+    
+    <text x="610" y="260" font-family="system-ui" font-size="11" fill="#dc2626">Urgent</text>
+    
+    <!-- Stock Alerts Panel -->
+    <rect x="30" y="300" width="300" height="120" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+    <text x="45" y="320" font-family="system-ui" font-size="12" font-weight="600" fill="#92400e">Stock Alerts</text>
+    
+    <text x="45" y="340" font-family="system-ui" font-size="10" fill="#92400e">⚠️ 3 products below minimum stock</text>
+    <text x="45" y="355" font-family="system-ui" font-size="10" fill="#92400e">🔴 2 products out of stock</text>
+    <text x="45" y="370" font-family="system-ui" font-size="10" fill="#92400e">📅 5 products expire within 7 days</text>
+    
+    <rect x="45" y="385" width="100" height="25" rx="4" fill="#f59e0b"/>
+    <text x="95" y="400" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">Generate Reorder</text>
+    
+    <!-- Recent Movements -->
+    <rect x="370" y="300" width="300" height="120" rx="8" fill="#f0fdf4" stroke="#10b981"/>
+    <text x="385" y="320" font-family="system-ui" font-size="12" font-weight="600" fill="#14532d">Recent Stock Movements</text>
+    
+    <text x="385" y="340" font-family="system-ui" font-size="10" fill="#14532d">↗️ French Fries: +50 units (Purchase)</text>
+    <text x="385" y="355" font-family="system-ui" font-size="10" fill="#14532d">↘️ Coca Cola: -25 units (Sale)</text>
+    <text x="385" y="370" font-family="system-ui" font-size="10" fill="#14532d">🔄 Premium Burger: Adjustment -5</text>
+    
+    <rect x="385" y="385" width="100" height="25" rx="4" fill="#10b981"/>
+    <text x="435" y="400" font-family="system-ui" font-size="10" font-weight="500" fill="white" text-anchor="middle">View Full Report</text>
+  </svg>
+</div>

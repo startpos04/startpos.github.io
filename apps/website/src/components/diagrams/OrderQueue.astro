@@ -1,0 +1,143 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden ${className}`}>
+  <div class="p-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+          <span class="text-emerald-600 text-lg">🧾</span>
+        </div>
+        <h3 class="font-bold text-slate-900">Order Queue</h3>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-1 bg-emerald-500 text-white text-xs font-semibold rounded-md">+ New Order</button>
+        <button class="px-3 py-1 border border-slate-200 text-slate-600 text-xs font-semibold rounded-md">Filter</button>
+      </div>
+    </div>
+
+    <!-- Status Tabs -->
+    <div class="flex gap-1 mb-4 bg-slate-50 p-1 rounded-lg">
+      <button class="px-3 py-1 bg-white text-slate-900 text-xs font-semibold rounded shadow-sm">Pending (3)</button>
+      <button class="px-3 py-1 text-slate-600 text-xs font-semibold rounded">In Progress (2)</button>
+      <button class="px-3 py-1 text-slate-600 text-xs font-semibold rounded">Ready (1)</button>
+      <button class="px-3 py-1 text-slate-600 text-xs font-semibold rounded">Served (8)</button>
+    </div>
+
+    <!-- Order Cards -->
+    <div class="grid grid-cols-1 gap-3">
+      <!-- Order 1 - Pending -->
+      <div class="border border-slate-200 rounded-lg p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <span class="font-bold text-orange-600 text-sm">07</span>
+            </div>
+            <div>
+              <div class="font-semibold text-slate-900">Table 7 - Dine In</div>
+              <div class="text-xs text-slate-500">11:45 AM • 2 pax</div>
+            </div>
+          </div>
+          <span class="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded">PENDING</span>
+        </div>
+        <div class="space-y-2 mb-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-600">2x Beef Sisig</span>
+            <span class="text-sm text-slate-900 font-medium">₱280</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-600">1x Chicken Adobo Rice</span>
+            <span class="text-sm text-slate-900 font-medium">₱150</span>
+          </div>
+          <div class="text-xs text-slate-400 ml-4">+ Extra rice, No vegetables</div>
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+          <span class="font-semibold text-slate-900">Total: ₱430</span>
+          <button class="px-3 py-1 bg-emerald-500 text-white text-xs font-semibold rounded">Start Cooking</button>
+        </div>
+      </div>
+
+      <!-- Order 2 - In Progress -->
+      <div class="border border-blue-200 rounded-lg p-4 bg-blue-50/30">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <span class="font-bold text-blue-600 text-sm">05</span>
+            </div>
+            <div>
+              <div class="font-semibold text-slate-900">Take Out</div>
+              <div class="text-xs text-slate-500">11:35 AM • Customer: Maria Santos</div>
+            </div>
+          </div>
+          <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">IN PROGRESS</span>
+        </div>
+        <div class="space-y-2 mb-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-600">1x Pork Binagoongan</span>
+            <span class="text-sm text-slate-900 font-medium">₱165</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-600">2x Garlic Rice</span>
+            <span class="text-sm text-slate-900 font-medium">₱80</span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+          <span class="font-semibold text-slate-900">Total: ₱245</span>
+          <button class="px-3 py-1 bg-emerald-500 text-white text-xs font-semibold rounded">Mark Ready</button>
+        </div>
+      </div>
+
+      <!-- Order 3 - Ready -->
+      <div class="border border-emerald-200 rounded-lg p-4 bg-emerald-50/30">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <span class="font-bold text-emerald-600 text-sm">03</span>
+            </div>
+            <div>
+              <div class="font-semibold text-slate-900">Delivery</div>
+              <div class="text-xs text-slate-500">11:20 AM • Rider: Juan Cruz</div>
+            </div>
+          </div>
+          <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded">READY</span>
+        </div>
+        <div class="space-y-2 mb-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-600">3x Pancit Canton</span>
+            <span class="text-sm text-slate-900 font-medium">₱390</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-600">2x Softdrinks</span>
+            <span class="text-sm text-slate-900 font-medium">₱60</span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+          <span class="font-semibold text-slate-900">Total: ₱450</span>
+          <button class="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded">Process Payment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="mt-6 grid grid-cols-3 gap-4">
+      <div class="text-center p-3 bg-slate-50 rounded-lg">
+        <div class="text-lg font-bold text-slate-900">6</div>
+        <div class="text-xs text-slate-600">Active Orders</div>
+      </div>
+      <div class="text-center p-3 bg-emerald-50 rounded-lg">
+        <div class="text-lg font-bold text-emerald-600">₱1,125</div>
+        <div class="text-xs text-slate-600">Queue Value</div>
+      </div>
+      <div class="text-center p-3 bg-blue-50 rounded-lg">
+        <div class="text-lg font-bold text-blue-600">12 min</div>
+        <div class="text-xs text-slate-600">Avg Wait Time</div>
+      </div>
+    </div>
+  </div>
+</div>

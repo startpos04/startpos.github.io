@@ -40,7 +40,12 @@ import BaseLayout from '../layouts/BaseLayout.astro'
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5" id="plan-grid">
         {PLANS.map((plan) => (
           <div class="plan-card-wrapper">
-            <PlanCard plan={plan} annual={false} />
+            <div class="plan-card-monthly">
+              <PlanCard plan={plan} annual={false} />
+            </div>
+            <div class="plan-card-annual hidden">
+              <PlanCard plan={plan} annual={true} />
+            </div>
           </div>
         ))}
       </div>
@@ -154,16 +159,27 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 <script>
   const monthlyBtn = document.getElementById('toggle-monthly')
   const annualBtn = document.getElementById('toggle-annual')
+  const monthlyCards = document.querySelectorAll('.plan-card-monthly')
+  const annualCards = document.querySelectorAll('.plan-card-annual')
 
-  function setActive(btn: HTMLElement | null) {
+  function setActive(btn: HTMLElement | null, isAnnual: boolean) {
+    // Update button styles
     [monthlyBtn, annualBtn].forEach((b) => {
       b?.classList.remove('bg-white', 'text-slate-900', 'shadow-sm')
       b?.classList.add('text-slate-400')
     })
     btn?.classList.add('bg-white', 'text-slate-900', 'shadow-sm')
     btn?.classList.remove('text-slate-400')
+
+    // Switch plan cards
+    monthlyCards.forEach((card) => {
+      card.classList.toggle('hidden', isAnnual)
+    })
+    annualCards.forEach((card) => {
+      card.classList.toggle('hidden', !isAnnual)
+    })
   }
 
-  monthlyBtn?.addEventListener('click', () => setActive(monthlyBtn))
-  annualBtn?.addEventListener('click', () => setActive(annualBtn))
+  monthlyBtn?.addEventListener('click', () => setActive(monthlyBtn, false))
+  annualBtn?.addEventListener('click', () => setActive(annualBtn, true))
 </script>

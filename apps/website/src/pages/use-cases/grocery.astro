@@ -1,7 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import GroceryWorkflow from '../../components/diagrams/GroceryWorkflow.astro'
 import FinalCTA from '../../components/sections/FinalCTA.astro'
 import { APP_URL } from '../../constants'
+import BaseLayout from '../../layouts/BaseLayout.astro'
 
 const features = [
   {
@@ -77,15 +78,9 @@ const stats = [
           </div>
         </div>
 
-        <!-- Visual placeholder -->
+        <!-- Real Grocery Workflow Diagram -->
         <div class="relative">
-          <div class="bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl aspect-video flex items-center justify-center">
-            <div class="text-center p-8">
-              <div class="text-6xl mb-4">🏪</div>
-              <p class="text-sm text-slate-400 font-medium">[Screenshot: Grocery checkout with barcode scan]</p>
-              <p class="text-xs text-slate-500 mt-1">Barcode scanning · bulk items · expiry tracking</p>
-            </div>
-          </div>
+          <GroceryWorkflow class="w-full" />
         </div>
       </div>
     </div>

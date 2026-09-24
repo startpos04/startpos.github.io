@@ -1,0 +1,90 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 600 400" class="w-full h-full">
+    <!-- Background -->
+    <rect width="600" height="400" fill="#ffffff"/>
+    
+    <!-- Title -->
+    <text x="300" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b" text-anchor="middle">Grocery Store Operations</text>
+    
+    <!-- Step 1: Barcode Scan -->
+    <rect x="40" y="60" width="100" height="70" rx="12" fill="#f0f9ff" stroke="#0ea5e9"/>
+    <text x="90" y="80" font-family="system-ui" font-size="20" text-anchor="middle">📊</text>
+    <text x="90" y="100" font-family="system-ui" font-size="11" font-weight="600" fill="#0369a1" text-anchor="middle">Barcode Scan</text>
+    <text x="90" y="115" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Fast checkout</text>
+    <text x="90" y="125" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Auto pricing</text>
+    
+    <!-- Arrow 1 -->
+    <path d="M 140 95 L 160 95" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 2: Weigh Items -->
+    <rect x="170" y="60" width="100" height="70" rx="12" fill="#f0fdf4" stroke="#16a34a"/>
+    <text x="220" y="80" font-family="system-ui" font-size="20" text-anchor="middle">⚖️</text>
+    <text x="220" y="100" font-family="system-ui" font-size="11" font-weight="600" fill="#16a34a" text-anchor="middle">Weigh Items</text>
+    <text x="220" y="115" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Bulk products</text>
+    <text x="220" y="125" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Per kg pricing</text>
+    
+    <!-- Arrow 2 -->
+    <path d="M 270 95 L 290 95" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 3: Check Expiry -->
+    <rect x="300" y="60" width="100" height="70" rx="12" fill="#fffbeb" stroke="#f59e0b"/>
+    <text x="350" y="80" font-family="system-ui" font-size="20" text-anchor="middle">📅</text>
+    <text x="350" y="100" font-family="system-ui" font-size="11" font-weight="600" fill="#d97706" text-anchor="middle">Expiry Check</text>
+    <text x="350" y="115" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Date validation</text>
+    <text x="350" y="125" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Alerts</text>
+    
+    <!-- Arrow 3 -->
+    <path d="M 400 95 L 420 95" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 4: Payment -->
+    <rect x="430" y="60" width="100" height="70" rx="12" fill="#fdf4ff" stroke="#a855f7"/>
+    <text x="480" y="80" font-family="system-ui" font-size="20" text-anchor="middle">💰</text>
+    <text x="480" y="100" font-family="system-ui" font-size="11" font-weight="600" fill="#9333ea" text-anchor="middle">Payment</text>
+    <text x="480" y="115" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Multiple methods</text>
+    <text x="480" y="125" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Split bills</text>
+    
+    <!-- Inventory Management -->
+    <text x="300" y="170" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b" text-anchor="middle">Inventory Management</text>
+    
+    <!-- Stock Tracking -->
+    <rect x="60" y="190" width="120" height="60" rx="8" fill="#f0f9ff" stroke="#0ea5e9"/>
+    <text x="120" y="210" font-family="system-ui" font-size="18" text-anchor="middle">📦</text>
+    <text x="120" y="228" font-family="system-ui" font-size="11" font-weight="600" fill="#0369a1" text-anchor="middle">Stock Tracking</text>
+    <text x="120" y="242" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Real-time counts</text>
+    
+    <!-- Expiry Management -->
+    <rect x="240" y="190" width="120" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+    <text x="300" y="210" font-family="system-ui" font-size="18" text-anchor="middle">⏰</text>
+    <text x="300" y="228" font-family="system-ui" font-size="11" font-weight="600" fill="#d97706" text-anchor="middle">Expiry Alerts</text>
+    <text x="300" y="242" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">FEFO rotation</text>
+    
+    <!-- Supplier Orders -->
+    <rect x="420" y="190" width="120" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a"/>
+    <text x="480" y="210" font-family="system-ui" font-size="18" text-anchor="middle">🚚</text>
+    <text x="480" y="228" font-family="system-ui" font-size="11" font-weight="600" fill="#16a34a" text-anchor="middle">Auto Reorder</text>
+    <text x="480" y="242" font-family="system-ui" font-size="9" fill="#64748b" text-anchor="middle">Smart thresholds</text>
+    
+    <!-- Key Features -->
+    <rect x="50" y="280" width="500" height="80" rx="8" fill="#f8fafc"/>
+    <text x="70" y="300" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Grocery-Specific Features:</text>
+    <text x="70" y="315" font-family="system-ui" font-size="10" fill="#64748b">• Barcode scanning for packaged goods • Weight-based pricing for bulk items</text>
+    <text x="70" y="327" font-family="system-ui" font-size="10" fill="#64748b">• Expiry date tracking with FEFO (First Expired, First Out) alerts</text>
+    <text x="70" y="339" font-family="system-ui" font-size="10" fill="#64748b">• Smart reorder points based on sales patterns and lead times</text>
+    <text x="70" y="351" font-family="system-ui" font-size="10" fill="#64748b">• Multi-unit pricing (per piece, per kg, per box) with automatic conversion</text>
+    
+    <!-- Arrow marker definition -->
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+      </marker>
+    </defs>
+  </svg>
+</div>

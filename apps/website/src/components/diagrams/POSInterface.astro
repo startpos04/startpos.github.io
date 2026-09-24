@@ -1,0 +1,144 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden ${className}`}>
+  <svg viewBox="0 0 800 500" class="w-full h-full">
+    <!-- Header Bar -->
+    <rect width="800" height="60" fill="#f8fafc"/>
+    <rect x="0" y="59" width="800" height="1" fill="#e2e8f0"/>
+    
+    <!-- Logo and Branch Info -->
+    <circle cx="30" cy="30" r="12" fill="#10b981"/>
+    <text x="50" y="25" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b">Start POS</text>
+    <text x="50" y="40" font-family="system-ui" font-size="11" fill="#64748b">Main Branch • Cashier: Maria</text>
+    
+    <!-- Connection Status -->
+    <rect x="680" y="15" width="100" height="30" rx="15" fill="#dcfce7"/>
+    <circle cx="695" cy="30" r="3" fill="#16a34a"/>
+    <text x="705" y="33" font-family="system-ui" font-size="11" font-weight="500" fill="#16a34a">Connected</text>
+    
+    <!-- Main Content Area -->
+    <rect x="0" y="60" width="500" height="440" fill="#ffffff"/>
+    <rect x="500" y="60" width="300" height="440" fill="#f8fafc"/>
+    <rect x="499" y="60" width="1" height="440" fill="#e2e8f0"/>
+    
+    <!-- Product Grid Title -->
+    <text x="20" y="90" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Products</text>
+    
+    <!-- Search Bar -->
+    <rect x="20" y="100" width="460" height="36" rx="8" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="30" y="121" font-family="system-ui" font-size="12" fill="#64748b">Search products or scan barcode...</text>
+    <rect x="440" y="108" width="20" height="20" rx="4" fill="#e2e8f0"/>
+    
+    <!-- Product Categories -->
+    <rect x="20" y="150" width="80" height="32" rx="6" fill="#10b981"/>
+    <text x="32" y="169" font-family="system-ui" font-size="11" font-weight="500" fill="white">All Items</text>
+    
+    <rect x="110" y="150" width="80" height="32" rx="6" fill="#f1f5f9"/>
+    <text x="125" y="169" font-family="system-ui" font-size="11" fill="#64748b">Beverages</text>
+    
+    <rect x="200" y="150" width="80" height="32" rx="6" fill="#f1f5f9"/>
+    <text x="225" y="169" font-family="system-ui" font-size="11" fill="#64748b">Snacks</text>
+    
+    <rect x="290" y="150" width="80" height="32" rx="6" fill="#f1f5f9"/>
+    <text x="315" y="169" font-family="system-ui" font-size="11" fill="#64748b">Meals</text>
+    
+    <!-- Product Grid -->
+    <!-- Row 1 -->
+    <rect x="20" y="200" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="30" y="210" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="35" y="225" font-family="system-ui" font-size="10" fill="#64748b">🥤</text>
+    <text x="30" y="280" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Coca Cola</text>
+    <text x="30" y="292" font-family="system-ui" font-size="10" fill="#10b981">₱25.00</text>
+    
+    <rect x="140" y="200" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="150" y="210" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="155" y="225" font-family="system-ui" font-size="10" fill="#64748b">🍟</text>
+    <text x="150" y="280" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">French Fries</text>
+    <text x="150" y="292" font-family="system-ui" font-size="10" fill="#10b981">₱45.00</text>
+    
+    <rect x="260" y="200" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="270" y="210" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="275" y="225" font-family="system-ui" font-size="10" fill="#64748b">🍔</text>
+    <text x="270" y="280" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Burger</text>
+    <text x="270" y="292" font-family="system-ui" font-size="10" fill="#10b981">₱85.00</text>
+    
+    <rect x="380" y="200" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="390" y="210" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="395" y="225" font-family="system-ui" font-size="10" fill="#64748b">🍕</text>
+    <text x="390" y="280" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Pizza Slice</text>
+    <text x="390" y="292" font-family="system-ui" font-size="10" fill="#10b981">₱65.00</text>
+    
+    <!-- Row 2 -->
+    <rect x="20" y="310" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="30" y="320" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="35" y="335" font-family="system-ui" font-size="10" fill="#64748b">🧃</text>
+    <text x="30" y="390" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Juice Box</text>
+    <text x="30" y="402" font-family="system-ui" font-size="10" fill="#10b981">₱35.00</text>
+    
+    <rect x="140" y="310" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="150" y="320" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="155" y="335" font-family="system-ui" font-size="10" fill="#64748b">🍪</text>
+    <text x="150" y="390" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Cookies</text>
+    <text x="150" y="402" font-family="system-ui" font-size="10" fill="#10b981">₱20.00</text>
+    
+    <rect x="260" y="310" width="110" height="100" rx="8" fill="white" stroke="#e2e8f0"/>
+    <rect x="270" y="320" width="90" height="60" rx="4" fill="#f8fafc"/>
+    <text x="275" y="335" font-family="system-ui" font-size="10" fill="#64748b">🥪</text>
+    <text x="270" y="390" font-family="system-ui" font-size="11" font-weight="500" fill="#1e293b">Sandwich</text>
+    <text x="270" y="402" font-family="system-ui" font-size="10" fill="#10b981">₱75.00</text>
+    
+    <!-- Right Panel - Cart -->
+    <text x="520" y="90" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Order #1247</text>
+    <text x="720" y="90" font-family="system-ui" font-size="12" fill="#64748b">3 items</text>
+    
+    <!-- Cart Items -->
+    <rect x="520" y="110" width="260" height="50" fill="white" stroke="#e2e8f0"/>
+    <text x="530" y="127" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Coca Cola</text>
+    <text x="530" y="140" font-family="system-ui" font-size="10" fill="#64748b">₱25.00 × 2</text>
+    <text x="750" y="127" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b" text-anchor="end">₱50.00</text>
+    
+    <rect x="520" y="160" width="260" height="50" fill="white" stroke="#e2e8f0"/>
+    <text x="530" y="177" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">French Fries</text>
+    <text x="530" y="190" font-family="system-ui" font-size="10" fill="#64748b">₱45.00 × 1</text>
+    <text x="750" y="177" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b" text-anchor="end">₱45.00</text>
+    
+    <rect x="520" y="210" width="260" height="50" fill="white" stroke="#e2e8f0"/>
+    <text x="530" y="227" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b">Burger</text>
+    <text x="530" y="240" font-family="system-ui" font-size="10" fill="#64748b">₱85.00 × 1</text>
+    <text x="750" y="227" font-family="system-ui" font-size="12" font-weight="500" fill="#1e293b" text-anchor="end">₱85.00</text>
+    
+    <!-- Totals -->
+    <rect x="520" y="280" width="260" height="1" fill="#e2e8f0"/>
+    <text x="530" y="300" font-family="system-ui" font-size="12" fill="#64748b">Subtotal</text>
+    <text x="750" y="300" font-family="system-ui" font-size="12" fill="#64748b" text-anchor="end">₱180.00</text>
+    
+    <text x="530" y="318" font-family="system-ui" font-size="12" fill="#64748b">Tax (12%)</text>
+    <text x="750" y="318" font-family="system-ui" font-size="12" fill="#64748b" text-anchor="end">₱21.60</text>
+    
+    <rect x="520" y="325" width="260" height="1" fill="#e2e8f0"/>
+    <text x="530" y="345" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b">Total</text>
+    <text x="750" y="345" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b" text-anchor="end">₱201.60</text>
+    
+    <!-- Payment Buttons -->
+    <rect x="520" y="370" width="125" height="40" rx="8" fill="#10b981"/>
+    <text x="545" y="393" font-family="system-ui" font-size="12" font-weight="500" fill="white">💳 Card</text>
+    
+    <rect x="655" y="370" width="125" height="40" rx="8" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="685" y="393" font-family="system-ui" font-size="12" font-weight="500" fill="#64748b">💵 Cash</text>
+    
+    <!-- Process Order Button -->
+    <rect x="520" y="420" width="260" height="50" rx="12" fill="#059669"/>
+    <text x="625" y="450" font-family="system-ui" font-size="14" font-weight="600" fill="white" text-anchor="middle">Process Order</text>
+    
+    <!-- Status Indicator -->
+    <rect x="520" y="480" width="260" height="20" fill="#dcfce7"/>
+    <circle cx="530" cy="490" r="3" fill="#16a34a"/>
+    <text x="540" y="493" font-family="system-ui" font-size="10" fill="#16a34a">✓ All data saved locally • Will sync when online</text>
+  </svg>
+</div>

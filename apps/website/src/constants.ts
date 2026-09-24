@@ -9,7 +9,7 @@ import { ANNUAL_DISCOUNT_PCT, APP_URL } from '@startpos/constants/lib/app'
 export { ANNUAL_DISCOUNT_PCT, APP_URL }
 
 /** Formspree endpoint for the contact form */
-export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'
+export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpznegqy'
 
 /** Base path */
 export const BASE_PATH = ''

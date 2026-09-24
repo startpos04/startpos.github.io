@@ -1,0 +1,48 @@
+---
+import POSInterface from '../diagrams/POSInterface.astro'
+import InventoryInterface from '../diagrams/InventoryInterface.astro'
+import ReportsInterface from '../diagrams/ReportsInterface.astro'
+import CashReconciliation from '../diagrams/CashReconciliation.astro'
+import BatchPreparation from '../diagrams/BatchPreparation.astro'
+import PurchasingSuppliers from '../diagrams/PurchasingSuppliers.astro'
+import TaskManagement from '../diagrams/TaskManagement.astro'
+import CustomerProfiles from '../diagrams/CustomerProfiles.astro'
+import OrderQueue from '../diagrams/OrderQueue.astro'
+import ProductCatalogue from '../diagrams/ProductCatalogue.astro'
+import ReceiptsCompliance from '../diagrams/ReceiptsCompliance.astro'
+import MultiBranchManagement from '../diagrams/MultiBranchManagement.astro'
+import EmployeeManagement from '../diagrams/EmployeeManagement.astro'
+
+interface Props {
+  moduleId: string;
+  icon: string;
+  title: string;
+  class?: string;
+}
+
+const { moduleId, icon, title, class: className } = Astro.props;
+---
+
+{moduleId === 'pos' && <POSInterface class={className} />}
+{moduleId === 'inventory' && <InventoryInterface class={className} />}
+{moduleId === 'reports' && <ReportsInterface class={className} />}
+{moduleId === 'cash' && <CashReconciliation class={className} />}
+{moduleId === 'batch' && <BatchPreparation class={className} />}
+{moduleId === 'purchasing' && <PurchasingSuppliers class={className} />}
+{moduleId === 'tasks' && <TaskManagement class={className} />}
+{moduleId === 'customers' && <CustomerProfiles class={className} />}
+{moduleId === 'orders' && <OrderQueue class={className} />}
+{moduleId === 'catalogue' && <ProductCatalogue class={className} />}
+{moduleId === 'receipts' && <ReceiptsCompliance class={className} />}
+{moduleId === 'branches' && <MultiBranchManagement class={className} />}
+{moduleId === 'employees' && <EmployeeManagement class={className} />}
+
+{!['pos', 'inventory', 'reports', 'cash', 'batch', 'purchasing', 'tasks', 'customers', 'orders', 'catalogue', 'receipts', 'branches', 'employees'].includes(moduleId) && (
+  <div class={`bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden aspect-[4/3] flex items-center justify-center ${className}`}>
+    <div class="text-center p-10">
+      <div class="text-6xl mb-4" aria-hidden="true">{icon}</div>
+      <p class="text-sm font-semibold text-slate-400">{title}</p>
+      <p class="text-xs text-slate-300 mt-1">Screenshot coming soon</p>
+    </div>
+  </div>
+)}

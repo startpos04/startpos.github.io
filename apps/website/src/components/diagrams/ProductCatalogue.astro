@@ -1,0 +1,204 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden ${className}`}>
+  <div class="p-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+          <span class="text-emerald-600 text-lg">📦</span>
+        </div>
+        <h3 class="font-bold text-slate-900">Product Catalogue</h3>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-1 bg-emerald-500 text-white text-xs font-semibold rounded-md">+ Add Product</button>
+        <button class="px-3 py-1 border border-slate-200 text-slate-600 text-xs font-semibold rounded-md">Import CSV</button>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="flex gap-2 mb-4">
+      <div class="flex-1 relative">
+        <input type="text" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <svg class="absolute left-2.5 top-2.5 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <select class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <option>All Categories</option>
+        <option>Main Dishes</option>
+        <option>Beverages</option>
+        <option>Desserts</option>
+      </select>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="flex gap-1 mb-4 bg-slate-50 p-1 rounded-lg">
+      <button class="px-3 py-1 bg-white text-slate-900 text-xs font-semibold rounded shadow-sm">Main Dishes (28)</button>
+      <button class="px-3 py-1 text-slate-600 text-xs font-semibold rounded">Beverages (12)</button>
+      <button class="px-3 py-1 text-slate-600 text-xs font-semibold rounded">Desserts (8)</button>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="space-y-3">
+      <!-- Product 1 - With Variants -->
+      <div class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
+        <div class="flex items-start gap-4">
+          <!-- Product Image -->
+          <div class="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg flex items-center justify-center shrink-0">
+            <span class="text-2xl">🍛</span>
+          </div>
+          
+          <!-- Product Details -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h4 class="font-semibold text-slate-900 mb-1">Beef Sisig</h4>
+                <p class="text-xs text-slate-500">SKU: BF-SISIG-001 • Category: Main Dishes</p>
+              </div>
+              <button class="p-1 text-slate-400 hover:text-slate-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Variants -->
+            <div class="space-y-2 mb-3">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-slate-600">Regular (300g)</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-slate-500">Cost: ₱95</span>
+                  <span class="font-semibold text-slate-900">Price: ₱140</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded">42 in stock</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-slate-600">Large (450g)</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-slate-500">Cost: ₱135</span>
+                  <span class="font-semibold text-slate-900">Price: ₱190</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded">28 in stock</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tags and Status -->
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Hot Seller</span>
+              <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Active</span>
+              <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded">Has Recipe</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 - Simple Product -->
+      <div class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center shrink-0">
+            <span class="text-2xl">🥤</span>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h4 class="font-semibold text-slate-900 mb-1">Fresh Buko Juice</h4>
+                <p class="text-xs text-slate-500">SKU: BV-BUKO-001 • Category: Beverages</p>
+              </div>
+              <button class="p-1 text-slate-400 hover:text-slate-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-sm mb-3">
+              <span class="text-slate-600">16oz Glass</span>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Cost: ₱25</span>
+                <span class="font-semibold text-slate-900">Price: ₱45</span>
+                <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">3 left</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">Low Stock</span>
+              <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Active</span>
+              <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">Perishable</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 - Bundle/Combo -->
+      <div class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center shrink-0">
+            <span class="text-2xl">🍱</span>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h4 class="font-semibold text-slate-900 mb-1">Value Meal Combo</h4>
+                <p class="text-xs text-slate-500">SKU: CM-VALUE-001 • Category: Combos</p>
+              </div>
+              <button class="p-1 text-slate-400 hover:text-slate-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="text-sm mb-3">
+              <div class="text-slate-600 mb-1">Bundle includes:</div>
+              <div class="text-slate-500 text-xs">• 1x Main Dish (choice of 3) • 1x Rice • 1x Drink</div>
+            </div>
+
+            <div class="flex items-center justify-between text-sm mb-3">
+              <span class="text-slate-600">Complete Set</span>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Bundle Cost: ₱155</span>
+                <span class="font-semibold text-slate-900">Price: ₱220</span>
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded">Available</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded">Bundle Product</span>
+              <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Active</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Popular</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="mt-6 grid grid-cols-4 gap-3">
+      <div class="text-center p-3 bg-slate-50 rounded-lg">
+        <div class="text-lg font-bold text-slate-900">48</div>
+        <div class="text-xs text-slate-600">Total Products</div>
+      </div>
+      <div class="text-center p-3 bg-emerald-50 rounded-lg">
+        <div class="text-lg font-bold text-emerald-600">42</div>
+        <div class="text-xs text-slate-600">In Stock</div>
+      </div>
+      <div class="text-center p-3 bg-red-50 rounded-lg">
+        <div class="text-lg font-bold text-red-600">4</div>
+        <div class="text-xs text-slate-600">Low Stock</div>
+      </div>
+      <div class="text-center p-3 bg-orange-50 rounded-lg">
+        <div class="text-lg font-bold text-orange-600">2</div>
+        <div class="text-xs text-slate-600">Out of Stock</div>
+      </div>
+    </div>
+  </div>
+</div>

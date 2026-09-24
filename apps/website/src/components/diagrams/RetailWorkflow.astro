@@ -1,0 +1,87 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 600 400" class="w-full h-full">
+    <!-- Background -->
+    <rect width="600" height="400" fill="#ffffff"/>
+    
+    <!-- Title -->
+    <text x="300" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b" text-anchor="middle">Retail Checkout Workflow</text>
+    
+    <!-- Step 1: Scan Products -->
+    <rect x="50" y="60" width="120" height="80" rx="12" fill="#f0f9ff" stroke="#0ea5e9"/>
+    <text x="110" y="85" font-family="system-ui" font-size="24" text-anchor="middle">📷</text>
+    <text x="110" y="105" font-family="system-ui" font-size="12" font-weight="600" fill="#0369a1" text-anchor="middle">Barcode Scan</text>
+    <text x="110" y="120" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Quick product lookup</text>
+    <text x="110" y="132" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Auto-add to cart</text>
+    
+    <!-- Arrow 1 -->
+    <path d="M 170 100 L 200 100" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 2: Cart Review -->
+    <rect x="220" y="60" width="120" height="80" rx="12" fill="#f0fdf4" stroke="#10b981"/>
+    <text x="280" y="85" font-family="system-ui" font-size="24" text-anchor="middle">🛒</text>
+    <text x="280" y="105" font-family="system-ui" font-size="12" font-weight="600" fill="#16a34a" text-anchor="middle">Review Cart</text>
+    <text x="280" y="120" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Adjust quantities</text>
+    <text x="280" y="132" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Apply discounts</text>
+    
+    <!-- Arrow 2 -->
+    <path d="M 340 100 L 370 100" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 3: Payment -->
+    <rect x="390" y="60" width="120" height="80" rx="12" fill="#fdf4ff" stroke="#a855f7"/>
+    <text x="450" y="85" font-family="system-ui" font-size="24" text-anchor="middle">💳</text>
+    <text x="450" y="105" font-family="system-ui" font-size="12" font-weight="600" fill="#9333ea" text-anchor="middle">Payment</text>
+    <text x="450" y="120" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Card • Cash • Mix</text>
+    <text x="450" y="132" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Split payments</text>
+    
+    <!-- Inventory Update Flow -->
+    <text x="300" y="180" font-family="system-ui" font-size="14" font-weight="600" fill="#1e293b" text-anchor="middle">Automatic Background Processing</text>
+    
+    <!-- Step 4: Inventory -->
+    <rect x="50" y="200" width="120" height="80" rx="12" fill="#fffbeb" stroke="#f59e0b"/>
+    <text x="110" y="225" font-family="system-ui" font-size="24" text-anchor="middle">📦</text>
+    <text x="110" y="245" font-family="system-ui" font-size="12" font-weight="600" fill="#d97706" text-anchor="middle">Stock Update</text>
+    <text x="110" y="260" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Reduce quantities</text>
+    <text x="110" y="272" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Track movements</text>
+    
+    <!-- Arrow 3 -->
+    <path d="M 170 240 L 200 240" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 5: Receipt -->
+    <rect x="220" y="200" width="120" height="80" rx="12" fill="#fef7ff" stroke="#ec4899"/>
+    <text x="280" y="225" font-family="system-ui" font-size="24" text-anchor="middle">🧾</text>
+    <text x="280" y="245" font-family="system-ui" font-size="12" font-weight="600" fill="#db2777" text-anchor="middle">Print Receipt</text>
+    <text x="280" y="260" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Transaction proof</text>
+    <text x="280" y="272" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Customer copy</text>
+    
+    <!-- Arrow 4 -->
+    <path d="M 340 240 L 370 240" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Step 6: Sync -->
+    <rect x="390" y="200" width="120" height="80" rx="12" fill="#f0fdf4" stroke="#10b981"/>
+    <text x="450" y="225" font-family="system-ui" font-size="24" text-anchor="middle">☁️</text>
+    <text x="450" y="245" font-family="system-ui" font-size="12" font-weight="600" fill="#16a34a" text-anchor="middle">Cloud Sync</text>
+    <text x="450" y="260" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Auto backup</text>
+    <text x="450" y="272" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="middle">Multi-branch sync</text>
+    
+    <!-- Key Features -->
+    <rect x="50" y="320" width="500" height="60" rx="8" fill="#f8fafc"/>
+    <text x="70" y="340" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Key Features:</text>
+    <text x="70" y="355" font-family="system-ui" font-size="10" fill="#64748b">• Barcode scanning for fast checkout • Product variants (size, color, etc.)</text>
+    <text x="70" y="367" font-family="system-ui" font-size="10" fill="#64748b">• Mix payment methods • Real-time inventory tracking • Works offline</text>
+    
+    <!-- Arrow marker definition -->
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+      </marker>
+    </defs>
+  </svg>
+</div>

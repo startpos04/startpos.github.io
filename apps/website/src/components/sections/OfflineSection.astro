@@ -24,11 +24,11 @@
 
         <ul class="mt-6 space-y-3">
           {[
-            'Data stored on the device — available instantly',
-            'Checkout works during full network outage',
+            'Data stored on the device first — no waiting for the cloud',
+            'Checkout works during network outages and power cuts',
             'Automatic background sync when connectivity returns',
-            'Optimistic UI updates — no waiting spinners',
-            'Conflict resolution built in',
+            'Multi-branch data sharing across all locations',
+            'Built-in conflict resolution handles concurrent changes',
           ].map((item) => (
             <li class="flex items-start gap-2.5 text-sm text-slate-300">
               <svg class="mt-0.5 shrink-0 text-emerald-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -38,85 +38,191 @@
             </li>
           ))}
         </ul>
+
+        <div class="mt-8 p-4 bg-slate-800/40 border border-slate-700 rounded-xl">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <path d="M12 9v4"/>
+                <path d="m12 17 .01 0"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-white mb-1">Why this matters for your business</p>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Cloud-only POS systems fail completely when your internet goes down. With Start POS, 
+                your business keeps running — customers can still checkout, staff can still work, 
+                and everything syncs perfectly when you're back online.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Diagram -->
+      <!-- Enhanced Sync Diagram -->
       <div class="reveal reveal-delay-2">
-        <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-8">
-          <!-- Sync diagram -->
-          <div class="flex flex-col items-center gap-4">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
+          
+          <!-- Diagram Header -->
+          <div class="text-center mb-6">
+            <h3 class="text-lg font-bold text-white mb-1">How Offline-First Works</h3>
+            <p class="text-sm text-slate-400">Data flows locally first, syncs when connected</p>
+          </div>
 
-            <!-- Device -->
-            <div class="flex flex-col items-center gap-2">
-              <div class="w-16 h-16 bg-slate-700 rounded-2xl border border-slate-600 flex items-center justify-center shadow-inner">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                  <line x1="12" y1="18" x2="12.01" y2="18"/>
-                </svg>
-              </div>
-              <span class="text-xs font-semibold text-slate-300">Device</span>
-            </div>
+          <div class="relative">
+            
+            <!-- Compact Horizontal Flow -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center mb-6">
 
-            <!-- Arrow down — always active -->
-            <div class="flex flex-col items-center gap-1">
-              <div class="flex items-center gap-3">
-                <div class="h-12 w-px bg-gradient-to-b from-emerald-500 to-emerald-500/20 relative">
-                  <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#10b981" stroke="#10b981" stroke-width="0">
-                      <polygon points="12 2 22 20 2 20"/>
+              <!-- Step 1: Sale + Local DB -->
+              <div class="flex flex-col items-center text-center space-y-4">
+                <!-- User Action -->
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-blue-500/20 border border-blue-500/40 rounded-xl flex items-center justify-center mb-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
                     </svg>
+                  </div>
+                  <div class="text-xs font-semibold text-white">Cashier makes sale</div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex items-center">
+                  <div class="w-6 h-px bg-emerald-400"></div>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="#10b981" stroke="#10b981" stroke-width="2">
+                    <polyline points="7 13 12 18 17 13"/>
+                    <polyline points="7 6 12 11 17 6"/>
+                  </svg>
+                  <div class="w-6 h-px bg-emerald-400"></div>
+                </div>
+
+                <!-- Local Database -->
+                <div class="flex flex-col items-center">
+                  <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500/40 rounded-xl flex items-center justify-center mb-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+                      <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                      <path d="M3 5v14a9 3 0 0 0 18 0V5"/>
+                      <path d="M3 12a9 3 0 0 0 18 0"/>
+                    </svg>
+                  </div>
+                  <div class="text-xs font-semibold text-white">Local Database</div>
+                  <div class="text-xs text-emerald-400">✓ Instant save</div>
+                </div>
+              </div>
+
+              <!-- Step 2: Connection Status -->
+              <div class="connection-status-demo flex flex-col items-center" id="connection-demo">
+                <!-- Online State -->
+                <div class="online-state transition-all duration-300" data-state="online">
+                  <div class="flex flex-col items-center space-y-3">
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/40 rounded-lg">
+                      <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                      <span class="text-xs font-medium text-emerald-400">Connected</span>
+                    </div>
+                    
+                    <!-- Sync Arrows -->
+                    <div class="flex items-center gap-1">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" class="animate-bounce">
+                        <polyline points="17 11 12 6 7 11"/>
+                        <polyline points="17 18 12 13 7 18"/>
+                      </svg>
+                      <div class="text-xs text-emerald-400 font-medium">Syncing</div>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" class="animate-bounce">
+                        <polyline points="17 11 12 6 7 11"/>
+                        <polyline points="17 18 12 13 7 18"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Offline State -->
+                <div class="offline-state hidden transition-all duration-300" data-state="offline">
+                  <div class="flex flex-col items-center space-y-3">
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-amber-500/20 border border-amber-500/40 rounded-lg">
+                      <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                      <span class="text-xs font-medium text-amber-400">Offline</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-1">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                      <div class="text-xs text-slate-500">No sync</div>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
-              <span class="text-xs text-emerald-400 font-semibold">Local DB</span>
-              <span class="text-xs text-slate-500">Always available</span>
-            </div>
 
-            <!-- Online / Offline toggle visual -->
-            <div class="w-full bg-slate-700/50 rounded-xl p-4 text-center border border-slate-600">
-              <div class="flex justify-between items-center">
-                <div class="flex flex-col items-center gap-1">
-                  <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
-                      <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-                      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-                      <line x1="12" y1="20" x2="12.01" y2="20"/>
-                    </svg>
+              <!-- Step 3: Cloud + Branches -->
+              <div class="flex flex-col items-center space-y-4">
+                <!-- Cloud Database -->
+                <div class="cloud-status-demo" id="cloud-demo">
+                  <!-- Online Cloud -->
+                  <div class="cloud-online flex flex-col items-center text-center transition-all duration-300" data-cloud="online">
+                    <div class="w-12 h-12 bg-blue-500/20 border border-blue-500/40 rounded-xl flex items-center justify-center mb-2">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+                        <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                      </svg>
+                    </div>
+                    <div class="text-xs font-semibold text-white">Cloud Database</div>
+                    <div class="text-xs text-blue-400">✓ Synced & backed up</div>
                   </div>
-                  <span class="text-xs text-slate-400">Online</span>
-                  <span class="text-xs text-emerald-400 font-semibold">Syncing ✓</span>
+
+                  <!-- Offline Cloud -->
+                  <div class="cloud-offline hidden flex flex-col items-center text-center transition-all duration-300" data-cloud="offline">
+                    <div class="w-12 h-12 bg-slate-600/40 border border-slate-500/40 rounded-xl flex items-center justify-center mb-2">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+                        <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                        <line x1="22" y1="2" x2="2" y2="22"/>
+                      </svg>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-400">Cloud Database</div>
+                    <div class="text-xs text-slate-500">⏳ Will sync when online</div>
+                  </div>
                 </div>
 
-                <div class="text-slate-600 text-lg font-bold">↔</div>
-
-                <div class="flex flex-col items-center gap-1">
-                  <div class="w-10 h-10 rounded-xl bg-slate-600/50 border border-slate-500/30 flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="1" y1="1" x2="23" y2="23"/>
-                      <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
-                      <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
-                      <path d="M10.71 5.05A16 16 0 0 1 22.56 9"/>
-                      <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
-                      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-                      <line x1="12" y1="20" x2="12.01" y2="20"/>
-                    </svg>
+                <!-- Branches -->
+                <div class="branches-demo" id="branches-demo">
+                  <div class="text-xs text-slate-400 mb-2 text-center">Syncs to all branches</div>
+                  <div class="flex justify-center gap-2">
+                    {[
+                      { icon: '🏪', label: 'A' },
+                      { icon: '🏬', label: 'B' }, 
+                      { icon: '🏢', label: 'C' }
+                    ].map((branch, i) => (
+                      <div class="branch-item flex flex-col items-center" data-branch={i}>
+                        <div class="w-6 h-6 bg-slate-700/60 border border-slate-600 rounded-md flex items-center justify-center text-xs">
+                          {branch.icon}
+                        </div>
+                        <div class="text-xs text-slate-500 mt-1">{branch.label}</div>
+                      </div>
+                    ))}
                   </div>
-                  <span class="text-xs text-slate-400">Offline</span>
-                  <span class="text-xs text-slate-400 font-semibold">Still working</span>
                 </div>
               </div>
+
             </div>
 
-            <!-- Cloud -->
-            <div class="flex flex-col items-center gap-2">
-              <span class="text-xs text-slate-500">Syncs when back online ↓</span>
-              <div class="w-16 h-16 bg-slate-700 rounded-2xl border border-slate-600 flex items-center justify-center shadow-inner">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
-                </svg>
+            <!-- Demo Controls -->
+            <div class="text-center pt-4 border-t border-slate-700/50">
+              <button 
+                id="demo-toggle" 
+                class="px-4 py-2 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition-all"
+              >
+                <span class="online-text">📶 Simulate network outage</span>
+                <span class="offline-text hidden">🔌 Restore connection</span>
+              </button>
+              <div class="text-xs text-slate-500 mt-2">
+                <span class="online-text">See how it works when internet goes down</span>
+                <span class="offline-text hidden">Watch data sync when connection returns</span>
               </div>
-              <span class="text-xs font-semibold text-slate-400">Cloud</span>
             </div>
 
           </div>
@@ -126,3 +232,66 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const demoToggle = document.getElementById('demo-toggle');
+    const connectionDemo = document.getElementById('connection-demo');
+    const cloudDemo = document.getElementById('cloud-demo');
+    const branchesDemo = document.getElementById('branches-demo');
+    
+    let isOnline = true;
+
+    function updateDemoState() {
+      // Toggle connection status
+      const onlineState = connectionDemo?.querySelector('.online-state');
+      const offlineState = connectionDemo?.querySelector('.offline-state');
+      
+      onlineState?.classList.toggle('hidden', !isOnline);
+      offlineState?.classList.toggle('hidden', isOnline);
+
+      // Toggle cloud status
+      const cloudOnline = cloudDemo?.querySelector('.cloud-online');
+      const cloudOffline = cloudDemo?.querySelector('.cloud-offline');
+      
+      cloudOnline?.classList.toggle('hidden', !isOnline);
+      cloudOffline?.classList.toggle('hidden', isOnline);
+
+      // Update button text
+      const onlineTexts = document.querySelectorAll('.online-text');
+      const offlineTexts = document.querySelectorAll('.offline-text');
+      
+      onlineTexts.forEach(el => el.classList.toggle('hidden', !isOnline));
+      offlineTexts.forEach(el => el.classList.toggle('hidden', isOnline));
+
+      // Animate branches when going back online
+      if (isOnline) {
+        animateBranches();
+      }
+    }
+
+    function animateBranches() {
+      const branches = branchesDemo?.querySelectorAll('.branch-item');
+      if (!branches) return;
+      
+      branches.forEach((branch, index) => {
+        setTimeout(() => {
+          branch.style.transform = 'scale(1.1)';
+          branch.style.transition = 'transform 0.3s ease';
+          
+          setTimeout(() => {
+            branch.style.transform = 'scale(1)';
+          }, 300);
+        }, index * 200);
+      });
+    }
+
+    demoToggle?.addEventListener('click', () => {
+      isOnline = !isOnline;
+      updateDemoState();
+    });
+
+    // Initial state
+    updateDemoState();
+  });
+</script>

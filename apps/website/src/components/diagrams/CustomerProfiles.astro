@@ -1,0 +1,150 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 700 500" class="w-full h-full">
+    <!-- Background -->
+    <rect width="700" height="500" fill="#ffffff"/>
+    
+    <!-- Header -->
+    <rect width="700" height="50" fill="#f8fafc"/>
+    <rect x="0" y="49" width="700" height="1" fill="#e2e8f0"/>
+    
+    <!-- Title -->
+    <text x="30" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Customer Profiles & Discounts</text>
+    
+    <!-- Add Customer Button -->
+    <rect x="570" y="15" width="100" height="30" rx="6" fill="#10b981"/>
+    <text x="620" y="33" font-family="system-ui" font-size="11" font-weight="500" fill="white" text-anchor="middle">+ Add Customer</text>
+    
+    <!-- Search Bar -->
+    <rect x="30" y="70" width="300" height="35" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="40" y="90" font-family="system-ui" font-size="12" fill="#64748b">🔍 Search customers...</text>
+    
+    <rect x="340" y="70" width="100" height="35" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="365" y="90" font-family="system-ui" font-size="12" fill="#64748b">All Types</text>
+    <text x="425" y="90" font-family="system-ui" font-size="12" fill="#64748b">▼</text>
+    
+    <!-- Customer Cards Grid -->
+    
+    <!-- Customer Card 1 - Senior Citizen -->
+    <rect x="30" y="125" width="200" height="140" rx="8" fill="#f0fdf4" stroke="#dcfce7"/>
+    <rect x="40" y="135" width="35" height="35" rx="6" fill="#dcfce7"/>
+    <text x="57.5" y="157" font-family="system-ui" font-size="18" text-anchor="middle">👵</text>
+    
+    <text x="85" y="145" font-family="system-ui" font-size="13" font-weight="600" fill="#1e293b">Rosa Martinez</text>
+    <text x="85" y="158" font-family="system-ui" font-size="10" fill="#64748b">ID: 1234567890123</text>
+    
+    <rect x="85" y="165" width="85" height="16" rx="8" fill="#fbbf24"/>
+    <text x="127.5" y="175" font-family="system-ui" font-size="9" font-weight="500" fill="#92400e" text-anchor="middle">Senior Citizen</text>
+    
+    <text x="40" y="195" font-family="system-ui" font-size="11" fill="#64748b">📧 rosa.m@email.com</text>
+    <text x="40" y="208" font-family="system-ui" font-size="11" fill="#64748b">📞 +63 917 123 4567</text>
+    
+    <text x="40" y="225" font-family="system-ui" font-size="10" font-weight="500" fill="#15803d">Auto Discount: 20% (SC/PWD)</text>
+    <text x="40" y="238" font-family="system-ui" font-size="10" fill="#64748b">Total Purchases: ₱12,450</text>
+    <text x="40" y="250" font-family="system-ui" font-size="10" fill="#64748b">Last Visit: Dec 18, 2024</text>
+    
+    <!-- Customer Card 2 - Corporate -->
+    <rect x="250" y="125" width="200" height="140" rx="8" fill="#eff6ff" stroke="#dbeafe"/>
+    <rect x="260" y="135" width="35" height="35" rx="6" fill="#dbeafe"/>
+    <text x="277.5" y="157" font-family="system-ui" font-size="18" text-anchor="middle">🏢</text>
+    
+    <text x="305" y="145" font-family="system-ui" font-size="13" font-weight="600" fill="#1e293b">ABC Corp Philippines</text>
+    <text x="305" y="158" font-family="system-ui" font-size="10" fill="#64748b">TIN: 123-456-789-000</text>
+    
+    <rect x="305" y="165" width="70" height="16" rx="8" fill="#3b82f6"/>
+    <text x="340" y="175" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Corporate</text>
+    
+    <text x="260" y="195" font-family="system-ui" font-size="11" fill="#64748b">📧 accounting@abccorp.ph</text>
+    <text x="260" y="208" font-family="system-ui" font-size="11" fill="#64748b">📞 (02) 8555-0123</text>
+    
+    <text x="260" y="225" font-family="system-ui" font-size="10" font-weight="500" fill="#1d4ed8">VAT Official Receipt Required</text>
+    <text x="260" y="238" font-family="system-ui" font-size="10" fill="#64748b">Total Purchases: ₱89,750</text>
+    <text x="260" y="250" font-family="system-ui" font-size="10" fill="#64748b">Last Order: Dec 19, 2024</text>
+    
+    <!-- Customer Card 3 - Regular -->
+    <rect x="470" y="125" width="200" height="140" rx="8" fill="#fafafa" stroke="#e2e8f0"/>
+    <rect x="480" y="135" width="35" height="35" rx="6" fill="#f1f5f9"/>
+    <text x="497.5" y="157" font-family="system-ui" font-size="18" text-anchor="middle">👤</text>
+    
+    <text x="525" y="145" font-family="system-ui" font-size="13" font-weight="600" fill="#1e293b">Michael Santos</text>
+    <text x="525" y="158" font-family="system-ui" font-size="10" fill="#64748b">Customer #C-1247</text>
+    
+    <rect x="525" y="165" width="50" height="16" rx="8" fill="#64748b"/>
+    <text x="550" y="175" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Regular</text>
+    
+    <text x="480" y="195" font-family="system-ui" font-size="11" fill="#64748b">📧 michael.s@gmail.com</text>
+    <text x="480" y="208" font-family="system-ui" font-size="11" fill="#64748b">📞 +63 919 876 5432</text>
+    
+    <text x="480" y="225" font-family="system-ui" font-size="10" fill="#64748b">Loyalty Points: 245 points</text>
+    <text x="480" y="238" font-family="system-ui" font-size="10" fill="#64748b">Total Purchases: ₱3,280</text>
+    <text x="480" y="250" font-family="system-ui" font-size="10" fill="#64748b">Last Visit: Dec 15, 2024</text>
+    
+    <!-- Transaction History Panel -->
+    <rect x="30" y="285" width="300" height="190" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="45" y="305" font-family="system-ui" font-size="12" font-weight="600" fill="#1e293b">Recent Transaction History</text>
+    <text x="290" y="305" font-family="system-ui" font-size="10" fill="#64748b" text-anchor="end">Rosa Martinez</text>
+    
+    <!-- Transaction Row 1 -->
+    <rect x="45" y="315" width="250" height="30" fill="white" stroke="#f1f5f9"/>
+    <text x="55" y="327" font-family="system-ui" font-size="10" fill="#64748b">Dec 18, 2024</text>
+    <text x="55" y="338" font-family="system-ui" font-size="10" fill="#64748b">Receipt #OR-2024-1456</text>
+    
+    <text x="170" y="327" font-family="system-ui" font-size="10" fill="#1e293b">3 items • ₱285.60</text>
+    <text x="170" y="338" font-family="system-ui" font-size="9" font-weight="500" fill="#16a34a">SC Discount: -₱71.40</text>
+    
+    <text x="275" y="332" font-family="system-ui" font-size="10" font-weight="500" fill="#1e293b" text-anchor="end">₱214.20</text>
+    
+    <!-- Transaction Row 2 -->
+    <rect x="45" y="345" width="250" height="30" fill="white" stroke="#f1f5f9"/>
+    <text x="55" y="357" font-family="system-ui" font-size="10" fill="#64748b">Dec 12, 2024</text>
+    <text x="55" y="368" font-family="system-ui" font-size="10" fill="#64748b">Receipt #OR-2024-1398</text>
+    
+    <text x="170" y="357" font-family="system-ui" font-size="10" fill="#1e293b">5 items • ₱456.80</text>
+    <text x="170" y="368" font-family="system-ui" font-size="9" font-weight="500" fill="#16a34a">SC Discount: -₱91.36</text>
+    
+    <text x="275" y="362" font-family="system-ui" font-size="10" font-weight="500" fill="#1e293b" text-anchor="end">₱365.44</text>
+    
+    <!-- Transaction Row 3 -->
+    <rect x="45" y="375" width="250" height="30" fill="white" stroke="#f1f5f9"/>
+    <text x="55" y="387" font-family="system-ui" font-size="10" fill="#64748b">Dec 08, 2024</text>
+    <text x="55" y="398" font-family="system-ui" font-size="10" fill="#64748b">Receipt #OR-2024-1321</text>
+    
+    <text x="170" y="387" font-family="system-ui" font-size="10" fill="#1e293b">2 items • ₱178.50</text>
+    <text x="170" y="398" font-family="system-ui" font-size="9" font-weight="500" fill="#16a34a">SC Discount: -₱35.70</text>
+    
+    <text x="275" y="392" font-family="system-ui" font-size="10" font-weight="500" fill="#1e293b" text-anchor="end">₱142.80</text>
+    
+    <text x="45" y="420" font-family="system-ui" font-size="10" fill="#64748b">Total Lifetime Savings: ₱2,489.50 from SC discount</text>
+    
+    <rect x="45" y="440" width="100" height="20" rx="4" fill="#10b981"/>
+    <text x="95" y="452" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">View Full History</text>
+    
+    <rect x="155" y="440" width="100" height="20" rx="4" fill="#3b82f6"/>
+    <text x="205" y="452" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Export to CSV</text>
+    
+    <!-- Discount Information Panel -->
+    <rect x="350" y="285" width="320" height="190" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+    <text x="365" y="305" font-family="system-ui" font-size="12" font-weight="600" fill="#92400e">Discount & BIR Compliance</text>
+    
+    <text x="365" y="325" font-family="system-ui" font-size="11" font-weight="500" fill="#92400e">Senior Citizen & PWD Discounts</text>
+    <text x="365" y="340" font-family="system-ui" font-size="10" fill="#92400e">• 20% discount on goods and services (RA 7432)</text>
+    <text x="365" y="352" font-family="system-ui" font-size="10" fill="#92400e">• Exempt from VAT on discounted amount</text>
+    <text x="365" y="364" font-family="system-ui" font-size="10" fill="#92400e">• Automatic application when customer selected</text>
+    
+    <text x="365" y="385" font-family="system-ui" font-size="11" font-weight="500" fill="#92400e">Corporate VAT Receipts</text>
+    <text x="365" y="400" font-family="system-ui" font-size="10" fill="#92400e">• Official Receipt with customer TIN number</text>
+    <text x="365" y="412" font-family="system-ui" font-size="10" fill="#92400e">• Proper VAT breakdown for accounting</text>
+    <text x="365" y="424" font-family="system-ui" font-size="10" fill="#92400e">• BIR-compliant transaction recording</text>
+    
+    <text x="365" y="445" font-family="system-ui" font-size="11" font-weight="500" fill="#92400e">Future: Loyalty Programs</text>
+    <text x="365" y="460" font-family="system-ui" font-size="10" fill="#92400e">• Points accumulation (coming soon)</text>
+    <text x="365" y="472" font-family="system-ui" font-size="10" fill="#92400e">• Targeted promotions and offers</text>
+  </svg>
+</div>

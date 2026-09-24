@@ -1,0 +1,166 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden ${className}`}>
+  <svg viewBox="0 0 700 500" class="w-full h-full">
+    <!-- Background -->
+    <rect width="700" height="500" fill="#ffffff"/>
+    
+    <!-- Header -->
+    <rect width="700" height="50" fill="#f8fafc"/>
+    <rect x="0" y="49" width="700" height="1" fill="#e2e8f0"/>
+    
+    <!-- Title -->
+    <text x="30" y="30" font-family="system-ui" font-size="16" font-weight="600" fill="#1e293b">Task Management - Operations Pipeline</text>
+    
+    <!-- New Task Button -->
+    <rect x="580" y="15" width="90" height="30" rx="6" fill="#10b981"/>
+    <text x="625" y="33" font-family="system-ui" font-size="11" font-weight="500" fill="white" text-anchor="middle">+ New Task</text>
+    
+    <!-- Filter Tabs -->
+    <rect x="30" y="65" width="640" height="40" fill="#f8fafc"/>
+    <rect x="30" y="104" width="640" height="1" fill="#e2e8f0"/>
+    
+    <rect x="50" y="75" width="80" height="25" rx="4" fill="#10b981"/>
+    <text x="90" y="90" font-family="system-ui" font-size="11" font-weight="500" fill="white" text-anchor="middle">All Tasks (12)</text>
+    
+    <rect x="140" y="75" width="90" height="25" rx="4" fill="#f1f5f9"/>
+    <text x="185" y="90" font-family="system-ui" font-size="11" fill="#64748b" text-anchor="middle">Pending (4)</text>
+    
+    <rect x="240" y="75" width="100" height="25" rx="4" fill="#f1f5f9"/>
+    <text x="290" y="90" font-family="system-ui" font-size="11" fill="#64748b" text-anchor="middle">In Progress (3)</text>
+    
+    <rect x="350" y="75" width="90" height="25" rx="4" fill="#f1f5f9"/>
+    <text x="395" y="90" font-family="system-ui" font-size="11" fill="#64748b" text-anchor="middle">Completed (5)</text>
+    
+    <!-- Task Pipeline Columns -->
+    
+    <!-- Pending Column -->
+    <rect x="30" y="120" width="200" height="360" rx="8" fill="#fef9c3" stroke="#fcd34d"/>
+    <text x="45" y="140" font-family="system-ui" font-size="12" font-weight="600" fill="#92400e">Pending Approval</text>
+    <text x="185" y="140" font-family="system-ui" font-size="11" fill="#92400e" text-anchor="end">4 tasks</text>
+    
+    <!-- Task Card 1 - Stock Reorder -->
+    <rect x="40" y="150" width="180" height="70" rx="6" fill="white" stroke="#f59e0b"/>
+    <rect x="45" y="155" width="20" height="20" rx="4" fill="#fbbf24"/>
+    <text x="55" y="167" font-family="system-ui" font-size="12" text-anchor="middle">📦</text>
+    
+    <text x="75" y="165" font-family="system-ui" font-size="11" font-weight="600" fill="#1e293b">Restock Low Items</text>
+    <text x="75" y="177" font-family="system-ui" font-size="9" fill="#64748b">5 products below minimum stock</text>
+    <text x="75" y="188" font-family="system-ui" font-size="9" fill="#64748b">Assigned: Maria Santos</text>
+    
+    <rect x="175" y="190" width="35" height="15" rx="7" fill="#fbbf24"/>
+    <text x="192.5" y="200" font-family="system-ui" font-size="8" font-weight="500" fill="#92400e" text-anchor="middle">URGENT</text>
+    
+    <text x="45" y="214" font-family="system-ui" font-size="8" fill="#64748b">Created: 2h ago</text>
+    
+    <!-- Task Card 2 - Inventory Count -->
+    <rect x="40" y="230" width="180" height="70" rx="6" fill="white" stroke="#e2e8f0"/>
+    <rect x="45" y="235" width="20" height="20" rx="4" fill="#e2e8f0"/>
+    <text x="55" y="247" font-family="system-ui" font-size="12" text-anchor="middle">📊</text>
+    
+    <text x="75" y="245" font-family="system-ui" font-size="11" font-weight="600" fill="#1e293b">Weekly Inventory Count</text>
+    <text x="75" y="257" font-family="system-ui" font-size="9" fill="#64748b">Full branch stock count</text>
+    <text x="75" y="268" font-family="system-ui" font-size="9" fill="#64748b">Assigned: John Martinez</text>
+    
+    <rect x="175" y="270" width="35" height="15" rx="7" fill="#e2e8f0"/>
+    <text x="192.5" y="280" font-family="system-ui" font-size="8" font-weight="500" fill="#64748b" text-anchor="middle">NORMAL</text>
+    
+    <text x="45" y="294" font-family="system-ui" font-size="8" fill="#64748b">Created: 1d ago</text>
+    
+    <!-- In Progress Column -->
+    <rect x="250" y="120" width="200" height="360" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="265" y="140" font-family="system-ui" font-size="12" font-weight="600" fill="#1d4ed8">In Progress</text>
+    <text x="405" y="140" font-family="system-ui" font-size="11" fill="#1d4ed8" text-anchor="end">3 tasks</text>
+    
+    <!-- Task Card 3 - Branch Transfer -->
+    <rect x="260" y="150" width="180" height="85" rx="6" fill="white" stroke="#3b82f6"/>
+    <rect x="265" y="155" width="20" height="20" rx="4" fill="#3b82f6"/>
+    <text x="275" y="167" font-family="system-ui" font-size="12" text-anchor="middle">🔄</text>
+    
+    <text x="295" y="165" font-family="system-ui" font-size="11" font-weight="600" fill="#1e293b">Branch Stock Transfer</text>
+    <text x="295" y="177" font-family="system-ui" font-size="9" fill="#64748b">Move 50 units to Branch B</text>
+    <text x="295" y="188" font-family="system-ui" font-size="9" fill="#64748b">Assigned: Lisa Chen</text>
+    
+    <!-- Progress Bar -->
+    <rect x="295" y="195" width="120" height="8" rx="4" fill="#e2e8f0"/>
+    <rect x="295" y="195" width="80" height="8" rx="4" fill="#3b82f6"/>
+    <text x="295" y="213" font-family="system-ui" font-size="8" fill="#64748b">Progress: 65% complete</text>
+    
+    <rect x="395" y="190" width="35" height="15" rx="7" fill="#3b82f6"/>
+    <text x="412.5" y="200" font-family="system-ui" font-size="8" font-weight="500" fill="white" text-anchor="middle">ACTIVE</text>
+    
+    <text x="265" y="229" font-family="system-ui" font-size="8" fill="#64748b">Started: 3h ago</text>
+    
+    <!-- Task Card 4 - Cash Count -->
+    <rect x="260" y="245" width="180" height="70" rx="6" fill="white" stroke="#e2e8f0"/>
+    <rect x="265" y="250" width="20" height="20" rx="4" fill="#10b981"/>
+    <text x="275" y="262" font-family="system-ui" font-size="12" text-anchor="middle">💵</text>
+    
+    <text x="295" y="260" font-family="system-ui" font-size="11" font-weight="600" fill="#1e293b">End of Day Cash Count</text>
+    <text x="295" y="272" font-family="system-ui" font-size="9" fill="#64748b">Reconcile register #1</text>
+    <text x="295" y="283" font-family="system-ui" font-size="9" fill="#64748b">Assigned: Maria Santos</text>
+    
+    <rect x="395" y="285" width="35" height="15" rx="7" fill="#10b981"/>
+    <text x="412.5" y="295" font-family="system-ui" font-size="8" font-weight="500" fill="white" text-anchor="middle">READY</text>
+    
+    <text x="265" y="309" font-family="system-ui" font-size="8" fill="#64748b">Started: 30m ago</text>
+    
+    <!-- Completed Column -->
+    <rect x="470" y="120" width="200" height="360" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+    <text x="485" y="140" font-family="system-ui" font-size="12" font-weight="600" fill="#15803d">Completed</text>
+    <text x="625" y="140" font-family="system-ui" font-size="11" fill="#15803d" text-anchor="end">5 tasks</text>
+    
+    <!-- Task Card 5 - Waste Recording -->
+    <rect x="480" y="150" width="180" height="70" rx="6" fill="white" stroke="#10b981"/>
+    <rect x="485" y="155" width="20" height="20" rx="4" fill="#10b981"/>
+    <text x="495" y="167" font-family="system-ui" font-size="12" text-anchor="middle">🗑️</text>
+    
+    <text x="515" y="165" font-family="system-ui" font-size="11" font-weight="600" fill="#1e293b">Record Expired Items</text>
+    <text x="515" y="177" font-family="system-ui" font-size="9" fill="#64748b">3 items past expiry date</text>
+    <text x="515" y="188" font-family="system-ui" font-size="9" fill="#64748b">Completed by: John Martinez</text>
+    
+    <rect x="615" y="190" width="35" height="15" rx="7" fill="#10b981"/>
+    <text x="632.5" y="200" font-family="system-ui" font-size="8" font-weight="500" fill="white" text-anchor="middle">DONE</text>
+    
+    <text x="485" y="214" font-family="system-ui" font-size="8" fill="#64748b">Completed: 1h ago</text>
+    
+    <!-- Task Card 6 - Equipment Check -->
+    <rect x="480" y="230" width="180" height="70" rx="6" fill="white" stroke="#10b981"/>
+    <rect x="485" y="235" width="20" height="20" rx="4" fill="#10b981"/>
+    <text x="495" y="247" font-family="system-ui" font-size="12" text-anchor="middle">🔧</text>
+    
+    <text x="515" y="245" font-family="system-ui" font-size="11" font-weight="600" fill="#1e293b">Daily Equipment Check</text>
+    <text x="515" y="257" font-family="system-ui" font-size="9" fill="#64748b">POS terminals & printers</text>
+    <text x="515" y="268" font-family="system-ui" font-size="9" fill="#64748b">Completed by: Lisa Chen</text>
+    
+    <rect x="615" y="270" width="35" height="15" rx="7" fill="#10b981"/>
+    <text x="632.5" y="280" font-family="system-ui" font-size="8" font-weight="500" fill="white" text-anchor="middle">DONE</text>
+    
+    <text x="485" y="294" font-family="system-ui" font-size="8" fill="#64748b">Completed: 2h ago</text>
+    
+    <!-- Task Actions -->
+    <rect x="30" y="445" width="640" height="40" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="45" y="460" font-family="system-ui" font-size="11" fill="#64748b">Quick Actions:</text>
+    
+    <rect x="45" y="470" width="100" height="20" rx="4" fill="#3b82f6"/>
+    <text x="95" y="482" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Generate Reorder Tasks</text>
+    
+    <rect x="155" y="470" width="100" height="20" rx="4" fill="#10b981"/>
+    <text x="205" y="482" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Schedule Stock Count</text>
+    
+    <rect x="265" y="470" width="100" height="20" rx="4" fill="#f59e0b"/>
+    <text x="315" y="482" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Create Waste Task</text>
+    
+    <rect x="375" y="470" width="100" height="20" rx="4" fill="#ef4444"/>
+    <text x="425" y="482" font-family="system-ui" font-size="9" font-weight="500" fill="white" text-anchor="middle">Emergency Task</text>
+    
+    <text x="500" y="475" font-family="system-ui" font-size="10" fill="#64748b">Tasks completed today: 12</text>
+    <text x="500" y="487" font-family="system-ui" font-size="10" fill="#64748b">Average completion: 2.3 hours</text>
+  </svg>
+</div>

@@ -1,7 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import RetailWorkflow from '../../components/diagrams/RetailWorkflow.astro'
 import FinalCTA from '../../components/sections/FinalCTA.astro'
 import { APP_URL } from '../../constants'
+import BaseLayout from '../../layouts/BaseLayout.astro'
 
 const features = [
   {
@@ -17,7 +18,7 @@ const features = [
   {
     icon: '📦',
     title: 'Inventory tracking',
-    description: 'Know exactly what\'s in stock — at each location — before a customer asks. Low-stock alerts included.',
+    description: "Know exactly what's in stock — at each location — before a customer asks. Low-stock alerts included.",
   },
   {
     icon: '📊',
@@ -77,15 +78,9 @@ const workflow = [
           </div>
         </div>
 
-        <!-- Visual placeholder -->
+        <!-- Real Retail Workflow Diagram -->
         <div class="relative">
-          <div class="bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl aspect-video flex items-center justify-center">
-            <div class="text-center p-8">
-              <div class="text-6xl mb-4">🛒</div>
-              <p class="text-sm text-slate-400 font-medium">[Screenshot: Retail checkout screen]</p>
-              <p class="text-xs text-slate-500 mt-1">Barcode scanning · product variants · fast checkout</p>
-            </div>
-          </div>
+          <RetailWorkflow class="w-full" />
         </div>
       </div>
     </div>

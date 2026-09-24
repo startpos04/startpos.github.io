@@ -14,7 +14,7 @@ export interface Props {
 const {
   title,
   description = "Start POS — the offline-first point of sale for retail, restaurant, and grocery. Works even when the internet doesn't.",
-  ogImage = '/og-image.png',
+  ogImage = '/favicon.svg',
   noIndex = false,
 } = Astro.props
 
@@ -49,6 +49,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Analytics -->
+  <script defer data-domain="startpos04.github.io" src="https://plausible.io/js/script.js"></script>
 
   <!-- JSON-LD — Organization -->
   <script type="application/ld+json" set:html={JSON.stringify({
